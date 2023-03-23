@@ -1,8 +1,8 @@
 # website
 
-website project made by student
+Dự án website làm bởi sinh viên
 
-## Contributors
+## CÁc cộng tác viên
 
 goatastronaut0212
 
