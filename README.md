@@ -2,7 +2,7 @@
 
 Dự án website làm bởi sinh viên
 
-## CÁc cộng tác viên
+## Các cộng tác viên
 
 goatastronaut0212
 
