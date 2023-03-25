@@ -61,6 +61,18 @@ CREATE TABLE bill_info (
         REFERENCES discount(discount_code_id)
 );
 
+CREATE TABLE bill_detail (
+    bill_detail_id VARCHAR(20),
+    bill_id        VARCHAR(20),
+    coffee_id      VARCHAR(20) UNIQUE,
+    amount         BIGINT,
+    PRIMARY KEY(bill_detail_id),
+    CONSTRAINT fk_coffee_for_bill_detail FOREIGN KEY(coffee_id)
+        REFERENCES coffee_info(coffee_id),
+    CONSTRAINT fk_bill_id_for_bill_detail FOREIGN KEY(bill_id)
+        REFERENCES bill_info(bill_id)
+);
+
 CREATE TABLE account (
     account_id          VARCHAR(20),
     account_username    VARCHAR(100),
