@@ -1,6 +1,5 @@
 const express = require('express');
 const router = express.Router();
-const { createAccount, authenticate, updateAccount, deleteAccount } = require('./accountController');
 
 // Tạo tài khoản mới
 router.post('/', async (req, res) => {
@@ -48,3 +47,4 @@ router.put('/:account_id', async (req, res) => {
   }
 });
 
+module.exports = router;
