@@ -28,8 +28,9 @@ router.post("/new", async (req, res) => {
   try {
     const { customer_id, customer_name, phone_number, email, address } =
       req.body;
+
     const NewUser = await pool.query(
-      `INSERT INTO customer_info VALUES ('${customer_id}', '${customer_name} , '${phone_number}', '${email}' , '${address}'');`
+      `INSERT INTO customer_info VALUES ('${customer_id}', '${customer_name}', '${phone_number}', '${email}' , '${address}');`
     );
     const getNewUser = await pool.query(
       `SELECT * FROM customer_info WHERE customer_id ='${customer_id}';`
@@ -49,7 +50,7 @@ router.put("/change", async (req, res) => {
        ,email ='${email}'  , address ='${address}'   WHERE customer_id='${customer_id}';`
     );
     const getCustomerInfoByID = await pool.query(
-      `SELECT * FROM coffee_category WHERE coffee_category_id='${coffee_category_id}';`
+      `SELECT * FROM customer_info WHERE customer_id='${customer_id}';`
     );
     res.json(getCustomerInfoByID.rows);
   } catch (err) {
