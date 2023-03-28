@@ -7,7 +7,7 @@ const pool = require('./database/postgresql');
 router.get('/', async (req, res) => {
   try {
     const getAllBilldetail = await pool.query(
-      `SELECT * FROM coffee_category;`
+      `SELECT * FROM bill_detail;`
     );
     res.json(getAllBilldetail.rows);
   } catch (err) {
