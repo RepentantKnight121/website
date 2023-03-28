@@ -17,10 +17,10 @@ router.get('/', async (req, res) => {
 
 router.get('/:id', async (req, res) => {
   try {
-    const getCoffeeCategory = await pool.query(
+    const getDiscount = await pool.query(
       `SELECT * FROM discount WHERE discount_code_id='${req.params.id}';`
     );
-    res.json(getCoffeeCategory.rows);
+    res.json(getDiscount.rows);
   } catch (err) {
     console.error(err.message);
   }
