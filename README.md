@@ -17,7 +17,7 @@ lxhoanq
 Vui lòng kiểm tra code repo của mình đã được update như code chính của chủ sở
 hữu repo này hay chưa trước khi thực hiện bất cứ commit nào lên repo của mình.
 
-#### Coding style
+#### Coding guideline
 
 Khi kết thúc 1 statement hãy thêm dấu ; vào
 
