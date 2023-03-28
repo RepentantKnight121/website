@@ -58,15 +58,5 @@ router.put('/change', async (req, res) => {
 });
 
 
-router.delete('/remove', async (req, res) => {
-  try {
-    const { account_id } = req.body;
-    const removeaccount = await pool.query(
-      `DELETE FROM account WHERE account_id='${account_id}';`
-    );
-    res.send("Delete successfully");
-  } catch (err) {
-    console.error(err.message);
-  }
-})
+
 module.exports = router;
