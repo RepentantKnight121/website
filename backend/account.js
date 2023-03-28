@@ -2,7 +2,7 @@ const express = require('express');
 const router = express.Router();
 
 // Connect to database
-const pool = require('./');
+const pool = require('./database/postgresql');
 
 router.get('/', async (req, res) => {
   try {
@@ -29,13 +29,13 @@ router.get('/:id', async (req, res) => {
 router.post('/new', async (req, res) => {
   try {
     const { account_id, account_username, account_password, account_displayname } = req.body;
-    const newaccount = await pool.query(
+    const Newaccount = await pool.query(
       `INSERT INTO account VALUES ('${account_id}', '${account_username}', '${account_password}', '${account_displayname}' );`
     );
-    const getAllaccount = await pool.query(
+    const getNewaccount = await pool.query(
       `SELECT * FROM account WHERE account_id='${account_id}';`
     );
-    res.json(getAllaccount.rows);
+    res.json(getNewaccount.rows);
   } catch (err) {
     console.error(err.message);
   }
@@ -43,15 +43,15 @@ router.post('/new', async (req, res) => {
 
 router.put('/change', async (req, res) => {
   try {
-    const { account_id, account_username, account_password, account_displayname } = req.body;
+    const { account_id, account_username, account_password, account_displayname, email } = req.body;
     const changeaccount = await pool.query(
-      `UPDATE account SET account_username='${account_username}' WHERE account_id='${account_id}';`
-      `UPDATE account SET account_password='${account_password}' WHERE account_id='${account_id}';`
+      `UPDATE account SET account_username='${account_username}' , account_id='${account_id}', account_password ='${account_password}', account_displayname=${account_displayname}', email ='${email}'    WHERE account_id='${account_id};`
+     
     );
-    const getaccount = await pool.query(
+    const getAccountByID = await pool.query(
       `SELECT * FROM account WHERE account_id='${account_id}';`
     );
-    res.json(getaccount.rows);
+    res.json(getAccountByID.rows);
   } catch (err) {
     console.error(err.message);
   }
@@ -60,7 +60,7 @@ router.put('/change', async (req, res) => {
 router.delete('/remove', async (req, res) => {
   try {
     const { account_id } = req.body;
-    const removeaccount = await pool.query(
+    const removeAccount = await pool.query(
       `DELETE FROM account WHERE account_id='${account_id}';`
     );
     res.send("Delete successfully");
