@@ -17,7 +17,7 @@ router.get('/', async (req, res) => {
 // Lấy thông tin chi tiết của một mã giảm giá
 router.get('/:id', async (req, res) => {
   try {
-    const result = await pool.query('SELECT * FROM discount WHERE discount_code_id=$1', [req.params.id]);
+    const result = await pool.query('SELECT * FROM discount WHERE discount_code_id=1', [req.params.id]);
     if (result.rows.length === 0) {
       return res.status(404).send('Discount code not found');
     }
@@ -32,7 +32,7 @@ router.get('/:id', async (req, res) => {
 router.post('/', async (req, res) => {
   const { discount_code_id, event_name, discount_percent } = req.body;
   try {
-    const result = await pool.query('INSERT INTO discount (discount_code_id, event_name, discount_percent) VALUES ($1, $2, $3) RETURNING *', [discount_code_id, event_name, discount_percent]);
+    const result = await pool.query('INSERT INTO discount (discount_code_id, event_name, discount_percent) VALUES (1, 2, 3) RETURNING *', [discount_code_id, event_name, discount_percent]);
     res.status(201).json(result.rows[0]);
   } catch (err) {
     console.error(err);
@@ -44,7 +44,7 @@ router.post('/', async (req, res) => {
 router.put('/:id', async (req, res) => {
   const { event_name, discount_percent } = req.body;
   try {
-    const result = await pool.query('UPDATE discount SET event_name=$1, discount_percent=$2 WHERE discount_code_id=$3 RETURNING *', [event_name, discount_percent, req.params.id]);
+    const result = await pool.query('UPDATE discount SET event_name=1, discount_percent=2 WHERE discount_code_id=3 RETURNING *', [event_name, discount_percent, req.params.id]);
     if (result.rows.length === 0) {
       return res.status(404).send('Discount code not found');
     }
@@ -57,7 +57,7 @@ router.put('/:id', async (req, res) => {
 // Xóa một mã giảm giá
 router.delete('/:id', (req, res, next) => {
   const id = req.params.id;
-  pool.query('DELETE FROM discount WHERE discount_code_id = $1', [id], (error, result) => {
+  pool.query('DELETE FROM discount WHERE discount_code_id = 1', [id], (error, result) => {
     if (error) {
       throw error;
     }
