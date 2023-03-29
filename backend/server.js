@@ -1,6 +1,7 @@
 // JavaScript library
 const express = require("express");
 const app = express();
+const cors = require("cors");
 
 const coffeeCategoryRouter = require("./coffee_category");
 const CustomerInfoRouter = require("./customer_info");
@@ -9,6 +10,7 @@ const billdetailRouter = require("./bill_detail");
 const billinfoRouter = require("./bill_info");
 
 app.use(express.json()); // req.body
+app.use(cors());         // Để tương tác với React code bên frontend
 app.use("/coffee-category", coffeeCategoryRouter);
 app.use("/customer-info", CustomerInfoRouter);
 app.use("/account", accountRouter);
