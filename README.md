@@ -90,11 +90,23 @@ Thêm cách file vô hàng chờ
 git add file1.js file2.js directory
 ```
 
-Trong trường hợp bạn đã add code vô hàng chờ và bạn muốn xóa ra khỏi hàng chờ.
-Hãy dùng lệnh này
+Trong trường hợp bạn đã add code vô hàng chờ và bạn muốn xóa ra khỏi hàng chờ
+nhưng bạn không muốn xóa file. Hãy dùng lệnh này
 
 ```sh
 git reset file2.js directory2
+```
+
+Để xem cách file trong hàng chờ của thư mục
+
+```sh
+git ls-files
+```
+
+Để xóa các file ra khỏi backup của git
+
+```sh
+git rm --cache file2.js
 ```
 
 Cam kết code và viết báo cáo commit. Vui lòng viết báo cáo bằng tiếng Việt có
