@@ -32,10 +32,10 @@ router.post('/new', async (req, res) => {
     const newDiscount = await pool.query(
       `INSERT INTO discount VALUES ('${discount_code_id}', '${event_name}', '${discount_percent}');`
     );
-    const getDiscount = await pool.query(
+    const getNewDiscount = await pool.query(
       `SELECT * FROM discount WHERE discount_code_id='${discount_code_id}';`
     );
-    res.json(getDiscount.rows);
+    res.json(getNewDiscount.rows);
   } catch (err) {
     console.error(err.message);
   }
@@ -45,12 +45,15 @@ router.put('/change', async (req, res) => {
   try {
     const { discount_code_id, event_name, discount_percent } = req.body;
     const changeDiscount = await pool.query(
-      `UPDATE discount SET event_name='${event_name}, discount_percent='${discount_percent} ' WHERE discount_code_id='${discount_code_id}';`
+      `UPDATE discount SET
+        event_name='${event_name},
+        discount_percent='${discount_percent}'
+       WHERE discount_code_id='${discount_code_id}';`
     );
-    const getDiscount = await pool.query(
+    const getChangeDiscount = await pool.query(
       `SELECT * FROM discount WHERE discount_code_id='${discount_code_id}';`
     );
-    res.json(getDiscount.rows);
+    res.json(getChangeDiscount.rows);
   } catch (err) {
     console.error(err.message);
   }
