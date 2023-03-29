@@ -1,3 +1,6 @@
+// Phiên bản api
+const apiVersion = "/api/v1";
+
 // JavaScript library
 const express = require("express");
 const app = express();
@@ -9,14 +12,11 @@ const billDetailRouter = require("./model/bill_detail");
 const billInfoRouter = require("./model/bill_info");
 const coffeeCategoryRouter = require("./model/coffee_category");
 const coffeeInfoRouter = require("./model/coffee_info");
-const customerInfoRouter = require("./customer_info");
+const customerInfoRouter = require("./model/customer_info");
 
 // Các thư viện được sử dụng trong app
 app.use(express.json()); // req.body
 app.use(cors());         // Để tương tác với React code bên frontend
-
-// Phiên bản api
-const apiVersion = "/api/v1";
 
 app.use(`${apiVersion}/account`, accountRouter);
 app.use(`${apiVersion}/bill-detail`, billDetailRouter);
