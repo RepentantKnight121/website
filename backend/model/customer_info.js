@@ -2,7 +2,7 @@ const express = require("express");
 const router = express.Router();
 
 // Connect to database
-const pool = require("./database/postgresql");
+const pool = require("../database/postgresql");
 
 router.get("/", async (req, res) => {
   try {

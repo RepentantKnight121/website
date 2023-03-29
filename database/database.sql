@@ -25,9 +25,9 @@ CREATE TABLE coffee_info (
         REFERENCES coffee_category(coffee_category_id)
 );
 
-CREATE TABLE storage (
-    coffee_id VARCHAR(20),
-    amount BIGINT CHECK (amount > 0 AND amount <= 1000),
+CREATE TABLE coffee_storage (
+    coffee_id VARCHAR(20) UNIQUE,
+    coffee_amount BIGINT CHECK (coffee_amount > 0 AND coffee_amount <= 1000),
     CONSTRAINT fk_storage_coffee_id FOREIGN KEY(coffee_id)
         REFERENCES coffee_info(coffee_id)
 );
@@ -65,7 +65,7 @@ CREATE TABLE bill_detail (
     bill_detail_id VARCHAR(20),
     bill_id        VARCHAR(20),
     coffee_id      VARCHAR(20) UNIQUE,
-    amount         BIGINT,
+    bill_amount    BIGINT CHECK (bill_amount > 0),
     PRIMARY KEY(bill_detail_id),
     CONSTRAINT fk_coffee_for_bill_detail FOREIGN KEY(coffee_id)
         REFERENCES coffee_info(coffee_id),
@@ -74,12 +74,11 @@ CREATE TABLE bill_detail (
 );
 
 CREATE TABLE account (
-    account_id          VARCHAR(20),
     account_username    VARCHAR(100),
     account_password    VARCHAR(100),
     account_displayname VARCHAR(100),
     email               VARCHAR(100),
-    PRIMARY KEY(account_id)
+    PRIMARY KEY(account_username)
 );
 
 \i insert_values.sql
