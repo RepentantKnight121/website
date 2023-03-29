@@ -6,7 +6,7 @@ Reload lại và lấy các class TailwindCSS được thêm hay đã thay đổ
 bạn đang ở thư mục frontend .
 
 ```sh
-npx tailwindcss -i ./src/input.css -o ./dist/output.css --watch
+npx tailwindcss -i ./src/input.css -o ./dist/output.css
 ```
 
 ## Chạy chương trình
