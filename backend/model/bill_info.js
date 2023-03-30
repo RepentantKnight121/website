@@ -41,7 +41,7 @@ router.post("/new", async (req, res) => {
         '${customer_id}',
         '${bill_id}',
         '${discount_code_id}',
-        '${address}'
+        '${address}',
         '${payment_time}');`
     );
     const getNewBillInfo = await pool.query(
@@ -68,8 +68,8 @@ router.put("/change", async (req, res) => {
         bill_id ='${bill_id}',
         customer_id='${customer_id}',
         discount_code_id='${discount_code_id}',
-        address ='${address}',
-        payment_time ='${payment_time}'
+        address='${address}',
+        payment_time='${payment_time}'
         WHERE bill_id='${bill_id}';`
     );
     const getBillInfoByID = await pool.query(
