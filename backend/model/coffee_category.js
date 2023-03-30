@@ -14,7 +14,7 @@ router.get('/', async (req, res) => {
     console.error(err.message);
   }
 });
-discount_code_idrouter.get('/:id', async (req, res) => {
+girouter.get('/:id', async (req, res) => {
   try {
     const getCoffeeCategory = await pool.query(
       `SELECT * FROM coffee_category WHERE coffee_category_id='${req.params.id}';`
