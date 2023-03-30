@@ -1,3 +1,6 @@
+INSERT INTO account VALUES
+('hiep', 'hiep', 'Hiệp', 'hiep@gmail.com', 1);
+
 /* coffee_category */
 INSERT INTO coffee_category VALUES
 ('CPC', 'Cà phê chai'),

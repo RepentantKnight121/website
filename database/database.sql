@@ -78,6 +78,7 @@ CREATE TABLE account (
     account_password    VARCHAR(100),
     account_displayname VARCHAR(100),
     email               VARCHAR(100),
+    account_permission  INT,
     PRIMARY KEY(account_username)
 );
 
