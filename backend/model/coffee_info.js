@@ -7,7 +7,17 @@ const pool = require('../database/postgresql');
 router.get('/', async (req, res) => {
   try {
     const getAllCoffeeInfo = await pool.query(
-      `SELECT * FROM coffee_info;`
+      `SELECT coffee_id,
+              coffee_category_id,
+              coffee_name,
+              ENCODE(coffee_image,'base64') AS coffee_image,
+              coffee_price,
+              coffee_ingredient,
+              coffee_characteristic,
+              coffee_shelf_life,
+              coffee_mass,
+              coffee_instructions,
+              coffee_detail FROM coffee_info;`
     );
     res.json(getAllCoffeeInfo.rows);
   } catch (err) {
@@ -18,7 +28,16 @@ router.get('/', async (req, res) => {
 router.get('/:id', async (req, res) => {
   try {
     const getCoffeeInfoByID = await pool.query(
-      `SELECT * FROM coffee_info WHERE coffee_id='${req.params.id}';`
+      `SELECT coffee_category_id,
+              coffee_name,
+              ENCODE(coffee_image,'base64') AS coffee_image,
+              coffee_price,
+              coffee_ingredient,
+              coffee_characteristic,
+              coffee_shelf_life,
+              coffee_mass,
+              coffee_instructions,
+              coffee_detail FROM coffee_info WHERE coffee_id='${req.params.id}';`
     );
     res.json(getCoffeeInfoByID.rows);
   } catch (err) {
@@ -34,8 +53,7 @@ router.post("/new", async (req, res) => {
       coffee_characteristic, coffee_shelf_life, coffee_mass,
       coffee_instructions, coffee_detail
     } = req.body;
-
-    const newCoffeeInfo = await pool.query(
+    await pool.query(
       `INSERT INTO coffee_info VALUES (
         '${coffee_id}',
         '${coffee_category_id}',
@@ -70,17 +88,17 @@ router.put("/change", async (req, res) => {
 
     const changeCoffeeInfo = await pool.query(
       `UPDATE coffee_info SET
-        coffee_category_id='${coffee_category_id}',
-        coffee_name='${coffee_name}',
-        coffee_image='${coffee_image}',
-        coffee_price='${coffee_price}',
-        coffee_ingredient='${coffee_ingredient}',
-        coffee_characteristic='${coffee_characteristic}',
-        coffee_shelf_life='${coffee_shelf_life}',
-        coffee_mass='${coffee_mass}',
-        coffee_instructions='${coffee_instructions}',
-        coffee_detail='${coffee_detail}')
-        WHERE coffee_id='${coffee_id}';`
+              coffee_category_id='${coffee_category_id}',
+              coffee_name='${coffee_name}',
+              coffee_image='${coffee_image}',
+              coffee_price='${coffee_price}',
+              coffee_ingredient='${coffee_ingredient}',
+              coffee_characteristic='${coffee_characteristic}',
+              coffee_shelf_life='${coffee_shelf_life}',
+              coffee_mass='${coffee_mass}',
+              coffee_instructions='${coffee_instructions}',
+              coffee_detail='${coffee_detail}')
+              WHERE coffee_id='${coffee_id}';`
     );
     const getChangeCoffeeByID = await pool.query(
       `SELECT * FROM coffee_info WHERE coffee_id='${coffee_id}';`
