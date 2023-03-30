@@ -13,5 +13,6 @@ Vui lòng xem ở `package.json` ở phần dependencies.
 Dùng lệnh này
 
 ```sh
-npm run startDev
+npm run dev
 ```
+
