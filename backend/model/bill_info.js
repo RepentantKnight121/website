@@ -7,7 +7,8 @@ const pool = require("../database/postgresql");
 router.get("/", async (req, res) => {
   try {
     const getAllBillInfo = await pool.query(
-        `SELECT * FROM bill_info;`);
+        `SELECT * FROM bill_info;`
+        );
     res.json(getAllBillInfo.rows);
   } catch (err) {
     console.error(err.message);
@@ -40,8 +41,8 @@ router.post("/new", async (req, res) => {
         '${customer_id}',
         '${bill_id}',
         '${discount_code_id}',
-        '${payment_time}',
-        '${address}');`
+        '${address}',
+        '${payment_time}');`
     );
     const getNewBillInfo = await pool.query(
       `SELECT * FROM bill_info WHERE bill_id='${bill_id}';`
@@ -67,8 +68,8 @@ router.put("/change", async (req, res) => {
         bill_id ='${bill_id}',
         customer_id='${customer_id}',
         discount_code_id='${discount_code_id}',
-        payment_time ='${payment_time}',
-        address ='${address}'
+        address='${address}',
+        payment_time='${payment_time}'
         WHERE bill_id='${bill_id}';`
     );
     const getBillInfoByID = await pool.query(
