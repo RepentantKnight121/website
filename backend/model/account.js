@@ -43,13 +43,13 @@ router.post('/new', async (req, res) => {
 
 router.put('/change', async (req, res) => {
   try {
-    const { account_username, account_password, account_displayname, email,account_permission } = req.body;
+    const { account_username, account_password, account_displayname, email, account_permission } = req.body;
 
     const changeAccount = await pool.query(
       `UPDATE account SET
         account_password ='${account_password}',
         account_displayname=${account_displayname}',
-        email ='${email}' 
+        email ='${email}' ,
         account_permission ='${account_permission}' 
         WHERE account_username='${account_username}';`
     );
