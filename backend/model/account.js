@@ -28,9 +28,21 @@ router.get('/:id', async (req, res) => {
 
 router.post('/new', async (req, res) => {
   try {
-    const { account_username, account_password, account_displayname, email, account_permission } = req.body;
+    const {
+      account_username,
+      account_password,
+      account_displayname,
+      email,
+      account_permission
+    } = req.body;
     const newAccount = await pool.query(
-      `INSERT INTO account VALUES ('${account_username}', '${account_password}', '${account_displayname}', '${email}', '${account_permission}' );`
+      `INSERT INTO account VALUES (
+        '${account_username}',
+        '${account_password}',
+        '${account_displayname}',
+        '${email}',
+        '${account_permission}'
+        );`
     );
     const getNewAccount = await pool.query(
       `SELECT * FROM account WHERE account_username='${account_username}';`
@@ -43,14 +55,20 @@ router.post('/new', async (req, res) => {
 
 router.put('/change', async (req, res) => {
   try {
-    const { account_username, account_password, account_displayname, email, account_permission } = req.body;
+    const {
+      account_username,
+      account_password,
+      account_displayname,
+      email,
+      account_permission
+    } = req.body;
 
     const changeAccount = await pool.query(
       `UPDATE account SET
         account_password ='${account_password}',
         account_displayname=${account_displayname}',
-        email ='${email}' ,
-        account_permission ='${account_permission}' 
+        email ='${email}',
+        account_permission='${account_permission}'
         WHERE account_username='${account_username}';`
     );
     const getAccountByID = await pool.query(
