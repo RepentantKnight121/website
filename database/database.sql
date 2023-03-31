@@ -14,11 +14,6 @@ CREATE TABLE coffee_info (
     coffee_name           VARCHAR(50),
     coffee_image          BYTEA,
     coffee_price          BIGINT,
-    coffee_ingredient     VARCHAR(100),
-    coffee_characteristic VARCHAR(700),
-    coffee_shelf_life     VARCHAR(100),
-    coffee_mass           VARCHAR(100),
-    coffee_instructions   VARCHAR(700),
     coffee_detail         VARCHAR(700),
     PRIMARY KEY(coffee_id),
     CONSTRAINT fk_coffee_category_for_coffee_info FOREIGN KEY(coffee_category_id)
