@@ -6,7 +6,7 @@ Reload lại và lấy các class TailwindCSS được thêm hay đã thay đổ
 bạn đang ở thư mục frontend .
 
 ```sh
-npx tailwindcss -i ./src/input.css -o ./dist/output.css
+npx tailwindcss -i ./src/input.css -o ./dist/output.css --watch
 ```
 
 ## Chạy chương trình
@@ -14,7 +14,7 @@ npx tailwindcss -i ./src/input.css -o ./dist/output.css
 Dùng lệnh sau:
 
 ```sh
-npm run vite
+npm run dev
 ```
 
 Lệnh sẽ cho bạn đường dẫn chỉ cần copy, paste nó vô web browser của bạn.

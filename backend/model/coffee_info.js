@@ -12,11 +12,6 @@ router.get('/', async (req, res) => {
               coffee_name,
               ENCODE(coffee_image,'base64') AS coffee_image,
               coffee_price,
-              coffee_ingredient,
-              coffee_characteristic,
-              coffee_shelf_life,
-              coffee_mass,
-              coffee_instructions,
               coffee_detail FROM coffee_info;`
     );
     res.json(getAllCoffeeInfo.rows);
@@ -32,11 +27,6 @@ router.get('/:id', async (req, res) => {
               coffee_name,
               ENCODE(coffee_image,'base64') AS coffee_image,
               coffee_price,
-              coffee_ingredient,
-              coffee_characteristic,
-              coffee_shelf_life,
-              coffee_mass,
-              coffee_instructions,
               coffee_detail FROM coffee_info WHERE coffee_id='${req.params.id}';`
     );
     res.json(getCoffeeInfoByID.rows);
@@ -44,14 +34,16 @@ router.get('/:id', async (req, res) => {
     console.error(err.message);
   }
 });
-
+1
 router.post("/new", async (req, res) => {
   try {
     const {
-      coffee_id, coffee_category_id, coffee_name,
-      coffee_image, coffee_price,coffee_ingredient,
-      coffee_characteristic, coffee_shelf_life, coffee_mass,
-      coffee_instructions, coffee_detail
+      coffee_id,
+      coffee_category_id,
+      coffee_name,
+      coffee_image,
+      coffee_price,
+      coffee_detail
     } = req.body;
     await pool.query(
       `INSERT INTO coffee_info VALUES (
@@ -60,11 +52,6 @@ router.post("/new", async (req, res) => {
         '${coffee_name}',
         '${coffee_image}',
         '${coffee_price}',
-        '${coffee_ingredient}',
-        '${coffee_characteristic}',
-        '${coffee_shelf_life}',
-        '${coffee_mass}',
-        '${coffee_instructions}',
         '${coffee_detail}');`
     );
     const getNewCoffeeInfo = await pool.query(
@@ -80,10 +67,12 @@ router.post("/new", async (req, res) => {
 router.put("/change", async (req, res) => {
   try {
     const {
-      coffee_id, coffee_category_id, coffee_name,
-      coffee_image, coffee_price,coffee_ingredient,
-      coffee_characteristic, coffee_shelf_life, coffee_mass,
-      coffee_instructions, coffee_detail
+      coffee_id,
+      coffee_category_id,
+      coffee_name,
+      coffee_image,
+      coffee_price,
+      coffee_detail
     } = req.body;
 
     const changeCoffeeInfo = await pool.query(
@@ -92,11 +81,6 @@ router.put("/change", async (req, res) => {
               coffee_name='${coffee_name}',
               coffee_image='${coffee_image}',
               coffee_price='${coffee_price}',
-              coffee_ingredient='${coffee_ingredient}',
-              coffee_characteristic='${coffee_characteristic}',
-              coffee_shelf_life='${coffee_shelf_life}',
-              coffee_mass='${coffee_mass}',
-              coffee_instructions='${coffee_instructions}',
               coffee_detail='${coffee_detail}')
               WHERE coffee_id='${coffee_id}';`
     );
