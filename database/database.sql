@@ -3,8 +3,8 @@ CREATE DATABASE coffee_website;
 \c coffee_website;
 
 CREATE TABLE coffee_category (
-    coffee_category_id VARCHAR(20),
-    coffee_category_name        VARCHAR(100),
+    coffee_category_id    VARCHAR(20),
+    coffee_category_name  VARCHAR(100),
     PRIMARY KEY(coffee_category_id)
 );
 
