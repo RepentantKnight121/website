@@ -1,5 +1,5 @@
 // Phiên bản api
-const apiVersion = "/api/v1";
+const apiVersion = "/api/";
 
 // JavaScript library
 const express = require("express");
@@ -12,14 +12,14 @@ dotenv.config();
 const PORT = process.env.PORT;
 
 // Các router sử dụng
-const accountRouter = require("./model/account");
-const billDetailRouter = require("./model/bill_detail");
-const billInfoRouter = require("./model/bill_info");
-const coffeeCategoryRouter = require("./model/coffee_category");
-const coffeeStorageRouter = require("./model/coffee_storage");
-const coffeeInfoRouter = require("./model/coffee_info");
-const customerInfoRouter = require("./model/customer_info");
-const discountRouter = require("./model/discount");
+const accountRouter = require("./access/account");
+const billDetailRouter = require("./access/bill_detail");
+const billInfoRouter = require("./access/bill_info");
+const coffeeCategoryRouter = require("./access/coffee_category");
+const coffeeStorageRouter = require("./access/coffee_storage");
+const coffeeInfoRouter = require("./access/coffee_info");
+const customerInfoRouter = require("./access/customer_info");
+const discountRouter = require("./access/discount");
 
 // Các thư viện được sử dụng trong app
 app.use(express.json()); // req.body
