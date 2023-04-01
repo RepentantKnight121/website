@@ -6,13 +6,12 @@ function EditCoffeeInfo({ id }) {
   const [ coffeeInfo, setCoffeeInfo ] = useState([]);
   const [ buttonEdit, setButtonEdit ] = useState(false);
 
-  const handleButtonEditClick = (value) => {
-    setButtonEdit(value);
+  const handleButtonEditClick = (buttonEdit) => {
+    setButtonEdit(!buttonEdit);
   }
 
   const getCoffeeInfo = async (id) => {
     try {
-      console.log(id)
       const data = await fetch(`http://localhost:5678/api/v1/coffee-info/${id}`, {
         method: "GET",
       });
@@ -37,7 +36,7 @@ function EditCoffeeInfo({ id }) {
         Chỉnh sửa
       </button>
   
-      { buttonEdit ? <FormEditCoffeeInfo coffeeInfo={coffeeInfo} onButtenEditClick={handleButtonEditClick} /> : null }
+      { buttonEdit ? <FormEditCoffeeInfo coffeeInfo={coffeeInfo} onButtonEditClick={handleButtonEditClick} /> : null }
     </>
   );
 

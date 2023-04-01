@@ -1,14 +1,13 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 
 import InputCoffeeInfo from './InputCoffeeInfo';
 
 function EditFormCoffeeInfo({ coffeeInfo, onButtonEditClick }) {
   const [buttonEdit, setButtonEdit] = useState(true);
 
-  const handleButtonClick = (buttonEdit) => {
-    const newVisibility = buttonEdit;
-    setButtonEdit(newVisibility);
-    onButtonEditClick(newVisibility);
+  const handleButtonClick = (value) => {
+    setButtonEdit(value);
+    onButtonEditClick(value);
   };
 
   return (
