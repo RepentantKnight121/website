@@ -5,6 +5,11 @@ const apiVersion = "/api/v1";
 const express = require("express");
 const app = express();
 const cors = require("cors");
+const dotenv = require("dotenv")
+
+dotenv.config();
+
+const PORT = process.env.PORT;
 
 // Các router sử dụng
 const accountRouter = require("./model/account");
@@ -28,6 +33,6 @@ app.use(`${apiVersion}/coffee-info`, coffeeInfoRouter);
 app.use(`${apiVersion}/customer-info`, customerInfoRouter);
 app.use(`${apiVersion}/discount`, discountRouter);
 
-app.listen(5678, () => {
+app.listen(PORT, () => {
   console.log("server started at port 5678");
 });
