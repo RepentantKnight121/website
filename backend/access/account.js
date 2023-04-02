@@ -9,22 +9,57 @@ router.get('/', async (req, res) => {
     const getAllAccount = await pool.query(
       `SELECT * FROM account;`
     );
-    res.json(getAllAccount.rows);
+    res.status(200).json(getAllAccount.rows);
   } catch (err) {
-    console.error(err.message);
+    res.status(400);
   } 
 });
 
-router.get('/:id', async (req, res) => {
-  try {
-    const getAllAccount = await pool.query(
-      `SELECT * FROM account WHERE account_username='${req.params.id}';`
-    );
-    res.json(getAllAccount.rows);
-  } catch (err) {
-    console.error(err.message);
-  }
-});
+router
+  .route('/:username')
+  .get(async (req, res) => {
+    try {
+      const getAllAccount = await pool.query(
+        `SELECT * FROM account WHERE account_username='${req.params.username}';`
+      );
+      res.status(200).json(getAllAccount.rows);
+    } catch (err) {
+      res.status(400);
+  }})
+  .put(async (req, res) => {
+    try {
+      const {
+        account_password,
+        account_displayname,
+        email,
+        account_permission
+      } = req.body;
+  
+      const changeAccount = await pool.query(
+        `UPDATE account SET
+          account_password ='${account_password}',
+          account_displayname=${account_displayname}',
+          email ='${email}',
+          account_permission='${account_permission}'
+          WHERE account_username='${req.params.username}';`
+      );
+      const getAccountByID = await pool.query(
+        `SELECT * FROM account WHERE account_username='${req.params.username}';`
+      );
+  
+      res.status(200).json(getAccountByID.rows);
+    } catch (err) {
+      res.status(400);
+  }})
+  .delete(async (req, res) => {
+    try {
+      const removeAccount = await pool.query(
+        `DELETE FROM account WHERE account_username='${req.params.username}';`
+      );
+      res.status(200).send('Delete successfully');
+    } catch (err) {
+      res.status(400)
+  }})
 
 router.post('/new', async (req, res) => {
   try {
@@ -47,50 +82,10 @@ router.post('/new', async (req, res) => {
     const getNewAccount = await pool.query(
       `SELECT * FROM account WHERE account_username='${account_username}';`
     );
-    res.json(getNewAccount.rows);
+    res.status(200).json(getNewAccount.rows);
   } catch (err) {
-    console.error(err.message);
+    res.status(400);
   }
 });
-
-router.put('/change', async (req, res) => {
-  try {
-    const {
-      account_username,
-      account_password,
-      account_displayname,
-      email,
-      account_permission
-    } = req.body;
-
-    const changeAccount = await pool.query(
-      `UPDATE account SET
-        account_password ='${account_password}',
-        account_displayname=${account_displayname}',
-        email ='${email}',
-        account_permission='${account_permission}'
-        WHERE account_username='${account_username}';`
-    );
-    const getAccountByID = await pool.query(
-      `SELECT * FROM account WHERE account_username='${account_username}';`
-    );
-
-    res.json(getAccountByID.rows);
-  } catch (err) {
-    console.error(err.message);
-  }
-});
-
-router.delete('/remove', async (req, res) => {
-  try {
-    const { account_username } = req.body;
-    const removeAccount = await pool.query(
-      `DELETE FROM account WHERE account_username='${account_username}';`
-    );
-    res.send("Delete successfully");
-  } catch (err) {
-    console.error(err.message);
-  }
-})
 
 module.exports = router;

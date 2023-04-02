@@ -9,22 +9,52 @@ router.get('/', async (req, res) => {
     const getAllBillDetail = await pool.query(
       `SELECT * FROM bill_detail;`
     );
-    res.json(getAllBillDetail.rows);
+    res.status(200).json(getAllBillDetail.rows);
   } catch (err) {
-    console.error(err.message);
+    res.status(400);
   }
 });
 
-router.get('/:id', async (req, res) => {
-  try {
-    const getBillDetail = await pool.query(
-      `SELECT * FROM bill_detail WHERE bill_detail_id='${req.params.id}';`
-    );
-    res.json(getBillDetail.rows);
-  } catch (err) {
-    console.error(err.message);
-  }
-});
+router
+  .route(':/id')
+  .get(async (req, res) => {
+    try {
+      const getBillDetail = await pool.query(
+        `SELECT * FROM bill_detail WHERE bill_detail_id='${req.params.id}';`
+      );
+      res.status(200).json(getBillDetail.rows);
+    } catch (err) {
+      res.status(400);
+  }})
+  .put(async (req, res) => {
+    try {
+      const { bill_id, coffee_id, bill_amount } = req.body;
+      
+      const changeBillDetail = await pool.query(
+        `UPDATE bill_detail SET
+          bill_id='${bill_id}',
+          coffee_id='${coffee_id}',
+          bill_amount='${bill_amount}'
+          WHERE bill_detail_id='${req.params.id}' ;`
+      );
+      const getBillDetailByID = await pool.query(
+        `SELECT * FROM bill_detail WHERE bill_detail_id='${req.params.id}';`
+      );
+  
+      res.status(200).json(getBillDetailByID.rows);
+    } catch (err) {
+      res.status(400);
+  }})
+  .delete(async (req, res) => {
+    try {      
+      const removeBillDetail = await pool.query(
+        `DELETE FROM bill_detail WHERE bill_detail_id='${req.params.id}';`
+      );
+  
+      res.status(200).send('Delete successfully');
+    } catch (err) {
+      res.status(400);
+  }})
 
 router.post('/new', async (req, res) => {
   try {
@@ -38,46 +68,10 @@ router.post('/new', async (req, res) => {
       `SELECT * FROM bill_detail WHERE bill_detail_id='${bill_detail_id}';`
     );
     
-    res.json(getNewBillDetail.rows);
+    res.status(200).json(getNewBillDetail.rows);
   } catch (err) {
-    console.error(err.message);
+    res.status(400);
   }
 });
-
-router.put('/change', async (req, res) => {
-  try {
-    const { bill_detail_id, bill_id, coffee_id, bill_amount } = req.body;
-    
-    const changeBillDetail = await pool.query(
-      `UPDATE bill_detail SET
-        bill_detail_id='${bill_detail_id}',
-        bill_id='${bill_id}',
-        coffee_id='${coffee_id}',
-        bill_amount='${bill_amount}'
-        WHERE bill_detail_id='${bill_detail_id}' ;`
-    );
-    const getBillDetailByID = await pool.query(
-      `SELECT * FROM bill_detail WHERE bill_detail_id='${bill_detail_id}';`
-    );
-
-    res.json(getBillDetailByID.rows);
-  } catch (err) {
-    console.error(err.message);
-  }
-});
-
-router.delete('/remove', async (req, res) => {
-  try {
-    const { bill_detail_id } = req.body;
-    
-    const removeBillDetail = await pool.query(
-      `DELETE FROM bill_detail WHERE bill_detail_id='${bill_detail_id}';`
-    );
-
-    res.send("Delete successfully");
-  } catch (err) {
-    console.error(err.message);
-  }
-})
 
 module.exports = router;
