@@ -23,7 +23,7 @@ CREATE TABLE coffee_info (
 CREATE TABLE coffee_storage (
     coffee_id VARCHAR(20) UNIQUE,
     coffee_amount BIGINT CHECK (coffee_amount > 0 AND coffee_amount <= 1000),
-    CONSTRAINT fk_storage_coffee_id FOREIGN KEY(coffee_id)
+    CONSTRAINT fk_storage_for_coffee_info FOREIGN KEY(coffee_id)
         REFERENCES coffee_info(coffee_id)
 );
 
