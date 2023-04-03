@@ -20,6 +20,25 @@ router.get('/', async (req, res) => {
   }
 });
 
+router.get('/same-category', async (req, res) => {
+  try {
+    const { coffee_category_id, coffee_id } = res.body;
+    const getAllCoffeeInfo = await pool.query(
+      `SELECT coffee_id,
+              coffee_category_id,
+              coffee_name,
+              ENCODE(coffee_image,'base64') AS coffee_image,
+              coffee_price,
+              coffee_detail FROM coffee_info, coffee_category
+        WHERE coffee_category_id IN ;`
+    );
+    res.status(200).json(getAllCoffeeInfo.rows);
+  } catch (err) {
+    res.status(400);
+    res.send(err.message);
+  }
+})
+
 router
   .route('/:id')
   .get(async (req, res) => {

@@ -2,14 +2,20 @@ const express = require('express');
 const router = express.Router();
 
 // Connect to database
-const pool = require('../database/postgresql');
+const sequelize = require('../database/postgresql')
 
 router.get('/', async (req, res) => {
   try {
-    const getAllCoffeeCategory = await pool.query(
-      `SELECT * FROM coffee_category;`
-    );
-    res.status(200).json(getAllCoffeeCategory.rows);
+    try {
+      await sequelize.authenticate();
+      console.log('Connection has been established successfully.');
+    } catch (err) {
+      console.error(err.message);
+    }
+    // const getAllCoffeeCategory = await pool.query(
+    //   `SELECT * FROM coffee_category;`
+    // );
+    // res.status(200).json(getAllCoffeeCategory.rows);
   } catch (err) {
     res.status(400);
   }
@@ -28,7 +34,7 @@ router
   }})
   .put(async (req, res) => {
     try {
-      const { coffee_category_id, coffee_category_name } = req.body;
+      const { coffee_category_name } = req.body;
       const changeCoffeeCategory = await pool.query(
         `UPDATE coffee_category SET
           coffee_category_name='${coffee_category_name}'
