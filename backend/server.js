@@ -1,20 +1,24 @@
-// Phiên bản api
-const apiVersion = "/api/v1";
-
 // JavaScript library
-const express = require("express");
+const express = require('express');
 const app = express();
-const cors = require("cors");
+const cors = require('cors');
+const dotenv = require('dotenv');
+
+dotenv.config();
+
+// Các biến toàn cục
+const apiVersion = '/api';
+const PORT = process.env.PORT;
 
 // Các router sử dụng
-const accountRouter = require("./model/account");
-const billDetailRouter = require("./model/bill_detail");
-const billInfoRouter = require("./model/bill_info");
-const coffeeCategoryRouter = require("./model/coffee_category");
-const coffeeStorageRouter = require("./model/coffee_storage");
-const coffeeInfoRouter = require("./model/coffee_info");
-const customerInfoRouter = require("./model/customer_info");
-const discountRouter = require("./model/discount");
+const accountRouter = require('./access/account');
+const billDetailRouter = require('./access/bill_detail');
+const billInfoRouter = require('./access/bill_info');
+const coffeeCategoryRouter = require('./access/coffee_category');
+const coffeeStorageRouter = require('./access/coffee_storage');
+const coffeeInfoRouter = require('./access/coffee_info');
+const customerInfoRouter = require('./access/customer_info');
+const discountRouter = require('./access/discount');
 
 // Các thư viện được sử dụng trong app
 app.use(express.json()); // req.body
@@ -24,10 +28,11 @@ app.use(`${apiVersion}/account`, accountRouter);
 app.use(`${apiVersion}/bill-detail`, billDetailRouter);
 app.use(`${apiVersion}/bill-info`, billInfoRouter);
 app.use(`${apiVersion}/coffee-category`, coffeeCategoryRouter);
+app.use(`${apiVersion}/coffee-storage`, coffeeCategoryRouter);
 app.use(`${apiVersion}/coffee-info`, coffeeInfoRouter);
 app.use(`${apiVersion}/customer-info`, customerInfoRouter);
 app.use(`${apiVersion}/discount`, discountRouter);
 
-app.listen(5678, () => {
-  console.log("server started at port 5678");
+app.listen(PORT, () => {
+  console.log(`server started at port ${PORT}`);
 });

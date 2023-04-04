@@ -84,6 +84,8 @@ class You {
 
 #### Các câu lệnh git
 
+#### Cơ bản
+
 Thêm cách file vô hàng chờ
 
 ```sh
@@ -115,6 +117,18 @@ chỉ cần viết báo cáo bạn đã làm những gì.
 
 ```sh
 git commit
+```
+
+Trường hợp bạn cần xem lịch sử commit để quay lại có thể dùng 2 lệnh sau
+
+```sh
+git log
+```
+
+Ví dụ như mình muốn quay lại commit 4bu623 thì gõ
+
+```sh
+git revert 4bu623
 ```
 
 Để đẩy code lên repo của bạn. Hãy dùng lệnh:
