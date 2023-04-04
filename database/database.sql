@@ -37,23 +37,23 @@ CREATE TABLE customer_info (
 );
 
 CREATE TABLE discount (
-    discount_code_id VARCHAR(20) NOT NULL,
-    event_name       VARCHAR(200),
-    discount_percent REAL,
-    PRIMARY KEY(discount_code_id)
+    discount_id    VARCHAR(20) NOT NULL,
+    discount_event_name VARCHAR(200),
+    discount_percent    REAL,
+    PRIMARY KEY(discount_id)
 );
 
 CREATE TABLE bill_info (
     bill_id          VARCHAR(20) NOT NULL,
     customer_id      VARCHAR(60) NOT NULL,
-    discount_code_id VARCHAR(20) NOT NULL,
+    discount_id VARCHAR(20) NOT NULL,
     customer_address          VARCHAR(400),
     payment_time     DATE,
     PRIMARY KEY(bill_id),
-    CONSTRAINT fk_customer FOREIGN KEY(customer_id)
+    CONSTRAINT fk_customer_for_bill_info FOREIGN KEY(customer_id)
         REFERENCES customer_info(customer_id),
-    CONSTRAINT fk_discount FOREIGN KEY(discount_code_id)
-        REFERENCES discount(discount_code_id)
+    CONSTRAINT fk_discount_for_bill_info FOREIGN KEY(discount_id)
+        REFERENCES discount(discount_id)
 );
 
 CREATE TABLE bill_detail (
@@ -62,7 +62,7 @@ CREATE TABLE bill_detail (
     coffee_id      VARCHAR(20) UNIQUE,
     bill_amount    BIGINT CHECK (bill_amount > 0),
     PRIMARY KEY(bill_detail_id),
-    CONSTRAINT fk_coffee_for_bill_detail FOREIGN KEY(coffee_id)
+    CONSTRAINT fk_coffee_id_for_bill_detail FOREIGN KEY(coffee_id)
         REFERENCES coffee_info(coffee_id),
     CONSTRAINT fk_bill_id_for_bill_detail FOREIGN KEY(bill_id)
         REFERENCES bill_info(bill_id)
