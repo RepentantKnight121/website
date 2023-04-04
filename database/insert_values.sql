@@ -1,7 +1,6 @@
 INSERT INTO account VALUES
 ('hiep', 'hiep', 'Hiệp', 'hiep@gmail.com', 1);
 
-/* coffee_category */
 INSERT INTO coffee_category VALUES
 ('CPC', 'Cà phê chai'),
 ('CPHT', 'Cà phê hòa tan'),
@@ -17,3 +16,8 @@ INSERT INTO coffee_info VALUES
   pg_read_binary_file('/tmp/TrungNguyen_LegendClassic_Bich.png'),
   142000, E'Kết hợp những loại cà phê nguyên liệu tốt nhất thế giới cùng công nghệ Nano và những bí quyết huyền diệu của Phương Đông.'
 )
+
+INSERT INTO discount VALUES
+('1', 'Sales hè', 0.01)
+
+INSERT INTO

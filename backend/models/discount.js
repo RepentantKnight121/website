@@ -1,24 +1,24 @@
-const Sequelize = require('sequelize');
+const { DataTypes } = require('sequelize');
 const sequelize = require('../database/postgresql');
 
 const Discount = sequelize.define('discount', {
-    id: {
-        type: Sequelize.STRING(20),
-        allowNull: false,
-        primaryKey: true,
-    },
-    eventName: {
-        type: Sequelize.STRING(200) ,
-        allowNull: false
-    },
-    discount_percent: {
-        type: Sequelize.FLOAT,
-        allowNull : false 
-    }
-    }, {
+  discount_id: {
+    type: DataTypes.STRING(20),
+    allowNull: false,
+    primaryKey: true,
+  },
+  discount_event_name: {
+    type: DataTypes.STRING(200) ,
+    allowNull: true
+  },
+  discount_percent: {
+    type: DataTypes.FLOAT,
+    allowNull: true
+  }},
+  {
+    tableName: 'discount',
     timestamps: false // Bỏ qua thuộc tính `created_at` và `updated_at` tự động của Sequelize
-    });
-                                        
+  }
+);
 
-
-module.exports = BillDetail;
+module.exports = Discount;
