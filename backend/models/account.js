@@ -2,26 +2,26 @@ const { DataTypes } = require('sequelize');
 const sequelize = require('../database/postgresql');
 
 const Account = sequelize.define('account', {
-  username: {
+  account_username: {
     type: DataTypes.STRING(100),
     allowNull: false,
     primaryKey: true,
   },
-  password: {
+  account_password: {
     type: DataTypes.STRING(100),
     allowNull: true,
   },
-  displayName: {
+  account_displayname: {
     type: DataTypes.STRING(100),
     allowNull: true,
   },
-  email: {
+  account_email: {
     type: DataTypes.STRING(100),
     allowNull: true,
   },
-  permisson: {
+  account_permission: {
     type: DataTypes.INTEGER,
-    allowNull: false,
+    allowNull: true,
   }},
   {
     tableName: 'account',
