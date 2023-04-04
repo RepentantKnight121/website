@@ -1,72 +1,110 @@
-const express = require('express');
-const router = express.Router();
+const Discount = require('../models/discount');
 
-// Connect to database
-const pool = require('../database/postgresql');
+const getDiscountById= (id) => {
+  return new Promise((resolve, reject) => {
+    Discount.findOne({
+      raw: true,
+      attributes: [
+        'discount_id',
+        'discount_event_name',
+        'discount_percent'
+      ],
+      where: { discount_id: id }
+    })
+    .then((discount) => {
+      if (!discount) {
+        console.warn(`No discount found with id ${id}`);
+        resolve(null);
+      } else {
+        console.log(`Discount found with id ${id}`);
+        resolve(discount);
+      }
+    })
+    .catch((error) => {
+      console.error(`Error finding discount with id ${id}: ${error.message}`);
+      reject(error);
+    });
+  });
+};
 
-router.get('/', async (req, res) => {
+const getAllDiscounts = () => {
+  return new Promise((resolve, reject) => {
+    Discount.findAll({
+      raw: true,
+      attributes: [
+        'discount_id',
+        'discount_event_name',
+        'discount_percent'
+      ]
+    })
+    .then(discounts => {
+      const allDiscounts = discounts.map(discount => {
+        return {
+          discount_id:         discount.discount_id,
+          discount_event_name: discount.discount_event_name,
+          discount_percent:    discount.discount_percent
+        }
+      });
+      console.log(allDiscounts);
+      resolve(allDiscounts);
+    })
+    .catch(err => {
+      console.error(err);
+      reject(err);
+    });
+  });
+};
+
+const createDiscount = async (newDiscount) => {
   try {
-    const getAlldiscount = await pool.query(
-      `SELECT * FROM discount;`
-    );
-    res.status(200).json(getAlldiscount.rows);
-  } catch (err) {
-    res.status(400);
+    const discountCreated = await Discount.create({
+      discount_id:         newDiscount.discount_id,
+      discount_event_name: newDiscount.discount_event_name,
+      discount_percent:    newDiscount.discount_percent
+    });
+    console.log(`Created discount with id ${discountCreated.discount_id}`);
+    return discountCreated; // return the created account object
+  } catch (error) {
+    console.error(`Error creating discount: ${error.message}`);
+    return null;
   }
-});
+};
 
-router
-  .route('/:id')
-  .get(async (req, res) => {
-    try {
-      const getDiscount = await pool.query(
-        `SELECT * FROM discount WHERE discount_code_id='${req.params.id}';`
-      );
-      res.status(200).json(getDiscount.rows);
-    } catch (err) {
-      res.status(400);
-  }})
-  .put(async (req, res) => {
-    try {
-      const { event_name, discount_percent } = req.body;
-      const changeDiscount = await pool.query(
-        `UPDATE discount SET
-          event_name='${event_name},
-          discount_percent='${discount_percent}'
-          WHERE discount_code_id='${req.params.id}';`
-      );
-      const getChangeDiscount = await pool.query(
-        `SELECT * FROM discount WHERE discount_code_id='${req.params.id}';`
-      );
-      res.status(200).json(getChangeDiscount.rows);
-    } catch (err) {
-      res.status(400);
-  }})
-  .delete(async (req, res) => {
-    try {
-      const removeDiscount = await pool.query(
-        `DELETE FROM discount WHERE discount_code_id='${req.params.id}';`
-      );
-      res.status(200).send("Delete successfully");
-    } catch (err) {
-      res.status(400);
-    }
-  })
-  
-router.post('/new', async (req, res) => {
+const updateDiscount = async (id, updatedDiscountData) => {
   try {
-    const { discount_code_id, event_name, discount_percent } = req.body;
-    const newDiscount = await pool.query(
-      `INSERT INTO discount VALUES
-      ('${discount_code_id}', '${event_name}', '${discount_percent}');`
-    );
-    const getNewDiscount = await pool.query(
-      `SELECT * FROM discount WHERE discount_code_id='${discount_code_id}';`
-    );
-    res.status(200).json(getNewDiscount.rows);
-  } catch (err) {
-    res.status(400);
+    const discountUpdated = await Discount.update(
+    {
+      discount_event_name: updatedDiscountData.discount_event_name,
+      discount_percent:    updatedDiscountData.discount_percent
+    },
+    {
+      where: { discount_id: id }
+    });
+    console.log(`Updated discount with id ${id}`);
+    return discountUpdated;
+  } catch (error) {
+    console.error(`Error updating discount with id ${id}: ${error.message}`);
+    return null;
   }
-});
+};
 
-module.exports = router;
+const deleteDiscount = async (id) => {
+  try {
+    const discountDeleted = await Discount.destroy({
+      where: { discount_id: id }
+    });
+    console.log(`Deleted discount with id ${id}`);
+    return discountDeleted;
+  } catch (error) {
+    console.error(`Error deleting discount with id ${id}: ${error.message}`);
+    return false;
+  }
+};
+
+module.exports = {
+  getDiscountById,
+  getAllDiscounts,
+  createDiscount,
+  updateDiscount,
+  deleteDiscount
+};

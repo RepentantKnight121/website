@@ -37,7 +37,7 @@ CREATE TABLE customer_info (
 );
 
 CREATE TABLE discount (
-    discount_id    VARCHAR(20) NOT NULL,
+    discount_id         VARCHAR(20) NOT NULL,
     discount_event_name VARCHAR(200),
     discount_percent    REAL,
     PRIMARY KEY(discount_id)
@@ -46,8 +46,8 @@ CREATE TABLE discount (
 CREATE TABLE bill_info (
     bill_id          VARCHAR(20) NOT NULL,
     customer_id      VARCHAR(60) NOT NULL,
-    discount_id VARCHAR(20) NOT NULL,
-    customer_address          VARCHAR(400),
+    discount_id      VARCHAR(20) NOT NULL,
+    customer_address VARCHAR(400),
     payment_time     DATE,
     PRIMARY KEY(bill_id),
     CONSTRAINT fk_customer_for_bill_info FOREIGN KEY(customer_id)
