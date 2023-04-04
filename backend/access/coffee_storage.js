@@ -56,16 +56,18 @@ const getCoffeeStorageByID = (idCoffee) => {
   });
 };
 
+
 // Tạo thông tin về cafe và số lượng dự trữ của nó 
 const createCoffeeStorage = async (newCoffeeStorage) => {
   try {
-    console.log(newCoffeeStorage)
+    const id = newCoffeeStorage.coffee_id ;
+    const amount = newCoffeeStorage.coffee_amount ;
     const CoffeeStorageCreated = await CoffeeStorage.create({
-      coffee_id: newCoffeeStorage.coffee_id,
-      coffee_amount: newCoffeeStorage.coffee_amount // parseInt(newCoffeeStorage.coffee_amount)
-    });
+      coffee_id:           id,
+      coffee_amount:   amount 
+    }, { fields: ['coffee_id' , 'coffee_amount'] , returning: false } );
     console.log(`Created new coffee storage with coffee id ${CoffeeStorageCreated.coffee_id}`);
-    return CoffeeStorageCreated; // return the created CoffeeStorage object
+    return { id , amount }; // return the created CoffeeStorage object
   } catch (error) {
     console.error(`Error creating new coffee storage: ${error.message}`);
     return null;
