@@ -1,91 +1,120 @@
-const express = require('express');
-const router = express.Router();
+const Account = require('../models/account');
 
-// Connect to database
-const pool = require('../database/postgresql');
+const getAccountByUsername = (username) => {
+  return new Promise((resolve, reject) => {
+    Account.findOne({
+      raw: true,
+      attributes: [
+        'account_username',
+        'account_password',
+        'account_displayname',
+        'account_email',
+        'account_permission'
+      ],
+      where: { account_username: username }
+    })
+    .then((account) => {
+      if (!account) {
+        console.warn(`No account found with username ${username}`);
+        resolve(null);
+      } else {
+        console.log(`Account found with username ${username}`);
+        resolve(account);
+      }
+    })
+    .catch((error) => {
+      console.error(`Error finding account with username ${username}: ${error.message}`);
+      reject(error);
+    });
+  });
+};
 
-router.get('/', async (req, res) => {
+const getAllAccounts = () => {
+  return new Promise((resolve, reject) => {
+    Account.findAll({
+      raw: true,
+      attributes: [
+        'account_username',
+        'account_password',
+        'account_displayname',
+        'account_email',
+        'account_permission'
+      ]
+    })
+    .then(accounts => {
+      const allAccounts = accounts.map(account => {
+        return {
+          account_username: account.account_username,
+          account_password: account.account_password,
+          account_displayname: account.account_displayname,
+          account_email: account.account_email,
+          account_permission: account.account_permission
+        }
+      });
+      console.log(allAccounts);
+      resolve(allAccounts);
+    })
+    .catch(err => {
+      console.error(err);
+      reject(err);
+    });
+  });
+};
+
+const createAccount = async (newAccount) => {
   try {
-    const getAllAccount = await pool.query(
-      `SELECT * FROM account;`
-    );
-    res.status(200).json(getAllAccount.rows);
-  } catch (err) {
-    res.status(400);
-  } 
-});
-
-router
-  .route('/:username')
-  .get(async (req, res) => {
-    try {
-      const getAllAccount = await pool.query(
-        `SELECT * FROM account WHERE account_username='${req.params.username}';`
-      );
-      res.status(200).json(getAllAccount.rows);
-    } catch (err) {
-      res.status(400);
-  }})
-  .put(async (req, res) => {
-    try {
-      const {
-        account_password,
-        account_displayname,
-        email,
-        account_permission
-      } = req.body;
-  
-      const changeAccount = await pool.query(
-        `UPDATE account SET
-          account_password ='${account_password}',
-          account_displayname=${account_displayname}',
-          email ='${email}',
-          account_permission='${account_permission}'
-          WHERE account_username='${req.params.username}';`
-      );
-      const getAccountByID = await pool.query(
-        `SELECT * FROM account WHERE account_username='${req.params.username}';`
-      );
-  
-      res.status(200).json(getAccountByID.rows);
-    } catch (err) {
-      res.status(400);
-  }})
-  .delete(async (req, res) => {
-    try {
-      const removeAccount = await pool.query(
-        `DELETE FROM account WHERE account_username='${req.params.username}';`
-      );
-      res.status(200).send('Delete successfully');
-    } catch (err) {
-      res.status(400)
-  }})
-
-router.post('/new', async (req, res) => {
-  try {
-    const {
-      account_username,
-      account_password,
-      account_displayname,
-      email,
-      account_permission
-    } = req.body;
-    const newAccount = await pool.query(
-      `INSERT INTO account VALUES (
-        '${account_username}',
-        '${account_password}',
-        '${account_displayname}',
-        '${email}',
-        '${account_permission}'
-        );`
-    );
-    const getNewAccount = await pool.query(
-      `SELECT * FROM account WHERE account_username='${account_username}';`
-    );
-    res.status(200).json(getNewAccount.rows);
-  } catch (err) {
-    res.status(400);
+    const accountCreated = await Account.create({
+      account_username: newAccount.account_username,
+      account_password: newAccount.account_password,
+      account_displayname: newAccount.account_displayname,
+      account_email: newAccount.account_email,
+      account_permission: newAccount.account_permission
+    });
+    console.log(`Created account with username ${accountCreated.account_username}`);
+    return accountCreated; // return the created account object
+  } catch (error) {
+    console.error(`Error creating account: ${error.message}`);
+    return null;
   }
-});
+};
 
-module.exports = router;
+const updateAccount = async (username, updatedAccountData) => {
+  try {
+    const accountUpdated = await Account.update(
+    {
+      account_password:    updatedAccountData.account_password,
+      account_displayname: updatedAccountData.account_displayname,
+      account_email:       updatedAccountData.account_email,
+      account_permission:  updatedAccountData.account_permission
+    },
+    {
+      where: { account_username: username }
+    });
+    console.log(`Updated account(s) with username ${username}`);
+    return accountUpdated;
+  } catch (error) {
+    console.error(`Error updating account with username ${username}: ${error.message}`);
+    return null;
+  }
+};
+
+const deleteAccount = async (username) => {
+  try {
+    const accountDeleted = await Account.destroy({
+      where: { account_username: username }
+    });
+    console.log(`Deleted account(s) with username ${username}`);
+    return accountDeleted;
+  } catch (error) {
+    console.error(`Error deleting account with username ${username}: ${error.message}`);
+    return false;
+  }
+};
+
+module.exports = {
+  getAccountByUsername,
+  getAllAccounts,
+  createAccount,
+  updateAccount,
+  deleteAccount
+};
