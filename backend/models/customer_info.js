@@ -1,30 +1,32 @@
 const { DataTypes } = require('sequelize');
 const sequelize = require('../database/postgresql');
 
-const CustomerInfo = sequelize.define('customer_info', {
-  id: {
-    type: DataTypes.STRING(20),
-    allowNull: false,
+const Customer_info = sequelize.define('customer_info', {
+  customer_id: {
+    type: DataTypes.STRING(100),
+    allowNull: true,
     primaryKey: true,
   },
-  name: {
-    type: DataTypes.STRING(60),
-    allowNull: false
+  customer_name: {
+    type: DataTypes.STRING(100),
+    allowNull: true
   },
-  phoneNumber: {
-    type: DataTypes.STRING(14),
-    allowNull: false
+  customer_phone_number: {
+    type: DataTypes.STRING(100),
+    allowNull: true
   },
-  email: {
-    type: DataTypes.STRING(80),
-    allowNull: false
+  customer_email: {
+    type: DataTypes.STRING(100),
+    allowNull: true
   },
-  address: {
+  customer_address: {
     type: DataTypes.STRING(400),
-    allowNull: false
+    allowNull: true
   }
-  }, {
+  }, 
+  {
+    tableName: 'customer_info',
     timestamps: false // Bỏ qua thuộc tính `created_at` và `updated_at` tự động của Sequelize
-});
+  });
 
-module.exports = CustomerInfo;
+module.exports = Customer_info;
