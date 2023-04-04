@@ -3,14 +3,14 @@ CREATE DATABASE coffee_website;
 \c coffee_website;
 
 CREATE TABLE coffee_category (
-    coffee_category_id    VARCHAR(20),
+    coffee_category_id    VARCHAR(20) NOT NULL,
     coffee_category_name  VARCHAR(100),
     PRIMARY KEY(coffee_category_id)
 );
 
 CREATE TABLE coffee_info (
-    coffee_id             VARCHAR(20), 
-    coffee_category_id    VARCHAR(50),
+    coffee_id             VARCHAR(20) NOT NULL, 
+    coffee_category_id    VARCHAR(50) NOT NULL,
     coffee_name           VARCHAR(50),
     coffee_image          BYTEA,
     coffee_price          BIGINT,
@@ -21,33 +21,33 @@ CREATE TABLE coffee_info (
 );
 
 CREATE TABLE coffee_storage (
-    coffee_id VARCHAR(20) UNIQUE,
+    coffee_id VARCHAR(20) UNIQUE NOT NULL,
     coffee_amount BIGINT CHECK (coffee_amount > 0 AND coffee_amount <= 1000),
     CONSTRAINT fk_storage_for_coffee_info FOREIGN KEY(coffee_id)
         REFERENCES coffee_info(coffee_id)
 );
 
 CREATE TABLE customer_info (
-    customer_id   VARCHAR(20),
-    customer_name VARCHAR(60),
-    phone_number  VARCHAR(14),
-    email         VARCHAR(80),
-    address       VARCHAR(400),
+    customer_id            VARCHAR(20) NOT NULL,
+    customer_name          VARCHAR(60),
+    customer_phone_number  VARCHAR(14),
+    customer_email         VARCHAR(80),
+    customer_address       VARCHAR(400),
     PRIMARY KEY(customer_id)
 );
 
 CREATE TABLE discount (
-    discount_code_id VARCHAR(20),
+    discount_code_id VARCHAR(20) NOT NULL,
     event_name       VARCHAR(200),
     discount_percent REAL,
     PRIMARY KEY(discount_code_id)
 );
 
 CREATE TABLE bill_info (
-    bill_id          VARCHAR(20),
-    customer_id      VARCHAR(60),
-    discount_code_id VARCHAR(20),
-    address          VARCHAR(400),
+    bill_id          VARCHAR(20) NOT NULL,
+    customer_id      VARCHAR(60) NOT NULL,
+    discount_code_id VARCHAR(20) NOT NULL,
+    customer_address          VARCHAR(400),
     payment_time     DATE,
     PRIMARY KEY(bill_id),
     CONSTRAINT fk_customer FOREIGN KEY(customer_id)
@@ -57,8 +57,8 @@ CREATE TABLE bill_info (
 );
 
 CREATE TABLE bill_detail (
-    bill_detail_id VARCHAR(20),
-    bill_id        VARCHAR(20),
+    bill_detail_id VARCHAR(20) NOT NULL,
+    bill_id        VARCHAR(20) NOT NULL,
     coffee_id      VARCHAR(20) UNIQUE,
     bill_amount    BIGINT CHECK (bill_amount > 0),
     PRIMARY KEY(bill_detail_id),
@@ -69,11 +69,11 @@ CREATE TABLE bill_detail (
 );
 
 CREATE TABLE account (
-    account_username    VARCHAR(100),
+    account_username    VARCHAR(100) NOT NULL,
     account_password    VARCHAR(100),
     account_displayname VARCHAR(100),
-    email               VARCHAR(100),
-    account_permission  INT,
+    account_email       VARCHAR(100),
+    account_permission  INT NOT NULL,
     PRIMARY KEY(account_username)
 );
 
