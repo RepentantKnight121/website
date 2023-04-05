@@ -1,66 +1,113 @@
+const { parse } = require("dotenv");
+const CoffeeStorage = require("../models/coffee_storage");
 const express = require('express');
 const router = express.Router();
+// Lấy list info về số lượng cà phê dự trữ trong kho
+const getAllCoffeeStorage = () =>{
+  return new Promise((resolve, reject) => {
+    CoffeeStorage.findAll({ 
+      raw: true,
+      attributes: [
+        'coffee_id',
+        'coffee_amount'
+      ]
+    })
+    .then(coffees => {
+      const allCoffees = coffees.map(coffee => {
+        return {
+          coffee_id: coffee.coffee_id,
+          coffee_amount: coffee.coffee_amount
+        }
+      });
+      console.log(allCoffees);
+      resolve(allCoffees);
+    })
+    .catch(err => {
+      console.error(err);
+      reject(err);
+    });
+  });
+}
 
-// Connect to database
-const pool = require('../database/postgresql');
+// Lấy thông tin về cafe và số lượng dự trữ của nó bởi ID
+const getCoffeeStorageByID = (idCoffee) => {
+  return new Promise((resolve, reject) => {
+    CoffeeStorage.findOne({ 
+      raw: true,
+      attributes: [
+        'coffee_id',
+        'coffee_amount'
+      ],
+      where: { coffee_id: idCoffee }
+    })
+    .then((Coffee) => {
+      if (!Coffee) {
+        console.warn(`No coffee storage found with id coffee ${idCoffee}`);
+        resolve(null);
+      } else {
+        console.log(`Coffee storage found with id coffee  ${idCoffee}`);
+        resolve(Coffee);
+      }
+    })
+    .catch((error) => {
+      console.error(`Error finding coffee storage found with id coffee ${idCoffee}: ${error.message}`);
+      reject(error);
+    });
+  });
+};
 
-router.get('/', async (req, res) => {
+
+// Tạo thông tin về cafe và số lượng dự trữ của nó 
+const createCoffeeStorage = async (newCoffeeStorage) => {
   try {
-    const getAllStorage = await pool.query(`SELECT * FROM coffee_storage;`);
-    res.status(200).json(getAllCustomer.rows);
-  } catch (err) {
-    res.status(400);
+    const id = newCoffeeStorage.coffee_id ;
+    const amount = newCoffeeStorage.coffee_amount ;
+    const CoffeeStorageCreated = await CoffeeStorage.create({
+      coffee_id:           id,
+      coffee_amount:   amount 
+    }, { fields: ['coffee_id' , 'coffee_amount'] , returning: false } );
+    console.log(`Created new coffee storage with coffee id ${CoffeeStorageCreated.coffee_id}`);
+    return { id , amount }; // return the created CoffeeStorage object
+  } catch (error) {
+    console.error(`Error creating new coffee storage: ${error.message}`);
+    return null;
   }
-});
+};
 
-router
-  .route('/:id')
-  .get(async (req, res) => {
-    try {
-      const getStorageID = await pool.query(
-        `SELECT * FROM coffee_storage WHERE coffee_id='${req.params.id}';`
-      );
-      res.status(200).json(getUserByID.rows);
-    } catch (err) {
-      res.status(400);
-  }})
-  .put(async (req, res) => {
-    try {
-      const coffee_amount =req.body;
-      const changeCoffeeStorage = await pool.query(
-        `UPDATE coffee_storage SET
-          coffee_amount='${coffee_amount}' WHERE coffee_id='${req.params.id}';`
-      );
-      const getCoffeeStorageByID = await pool.query(
-        `SELECT * FROM coffee_storage WHERE coffee_id='${req.params.id}';`
-      );
-      res.status(200).json(getCoffeeStorageByID.rows);
-    } catch (err) {
-      res.status(400);
-  }})
-  .delete(async (req, res) => {
-    try {
-      const removeCoffeeStorage = await pool.query(
-        `DELETE FROM coffee_storage WHERE coffee_id='${req.params.id}';`
-      );
-      res.status(200).send("Delete successfully");
-    } catch (err) {
-      res.status(400);
-  }})
-
-router.post("/new", async (req, res) => {
+const deleteCoffeeStorage = async (idCoffee) => {
   try {
-    const { coffee_id, coffee_amount } = req.body;
-    const newCoffeeStorage = await pool.query(
-      `INSERT INTO coffee_storage VALUES ('${coffee_id}', '${coffee_amount}');`
-    );
-    const getNewCoffeeStorage = await pool.query(
-      `SELECT * FROM coffee_storage WHERE coffee_id='${customer_id}';`
-    );
-    res.status(200).json(getNewCoffeeStorage.rows);
-  } catch (err) {
-    res.status(400);
+    const CoffeeStorageDeleted = await CoffeeStorage.destroy({
+      where: { coffee_id: idCoffee }
+    });
+    console.log(`Deleted coffee storage with id coffee ${idCoffee}`);
+    return CoffeeStorageDeleted;
+  } catch (error) {
+    console.error(`Error deleting coffee storage with id coffee ${idCoffee}: ${error.message}`);
+    return false;
   }
-});
+};
 
-module.exports = router;
+const updateCoffeeStorage = async (idCoffee , UpdateCoffee_amount) => {
+  try {
+    const CoffeeStorageUpdated = await CoffeeStorage.update(
+    {
+      coffee_amount: UpdateCoffee_amount
+    },
+    {
+      where: { coffee_id: idCoffee }
+    });
+    console.log(`Updated coffee storage with id coffee ${idCoffee}`);
+    return CoffeeStorageUpdated;
+  } catch (error) {
+    console.error(`Error updating coffee storage with id coffee ${idCoffee}: ${error.message}`);
+    return null;
+  }
+};
+
+module.exports = {
+  getAllCoffeeStorage,
+  getCoffeeStorageByID,
+  createCoffeeStorage,
+  deleteCoffeeStorage,
+  updateCoffeeStorage
+};
