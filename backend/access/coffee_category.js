@@ -1,76 +1,105 @@
-const express = require('express');
-const router = express.Router();
+const CoffeeCategory = require('../models/coffee_category');
 
-// Connect to database
-const sequelize = require('../database/postgresql')
+const getCoffeeCategoryById = (id) => {
+  return new Promise((resolve, reject) => {
+    CoffeeCategory.findOne({
+      raw: true,
+      attributes: [
+        'coffee_category_id',
+        'coffee_category_name'
+      ],
+      where: { coffee_category_id: id }
+    })
+    .then((coffeecategory) => {
+      if (!coffeecategory) {
+        console.warn(`No coffee category found with id ${id}`);
+        resolve(null);
+      } else {
+        console.log(`Coffee category found with id ${id}`);
+        resolve(coffeecategory);
+      }
+    })
+    .catch((error) => {
+      console.error(`Error finding coffee category with id ${id}: ${error.message}`);
+      reject(error);
+    });
+  });
+};
 
-router.get('/', async (req, res) => {
+const getAllCoffeeCategories = () => {
+  return new Promise((resolve, reject) => {
+    CoffeeCategory.findAll({
+      raw: true,
+      attributes: [
+        'coffee_category_id',
+        'coffee_category_name'
+      ]
+    })
+    .then(coffeecategories => {
+      const allCoffeeCategories = coffeecategories.map(coffeecategory => {
+        return {
+          coffee_category_id: coffeecategory.coffee_category_id,
+          coffee_category_name: coffeecategory.coffee_category_name
+        }
+      });
+      console.log(allCoffeeCategories);
+      resolve(allCoffeeCategories);
+    })
+    .catch(err => {
+      console.error(err);
+      reject(err);
+    });
+  });
+};
+
+const createCoffeeCategory = async (newCoffeeCategory) => {
   try {
-    try {
-      await sequelize.authenticate();
-      console.log('Connection has been established successfully.');
-    } catch (err) {
-      console.error(err.message);
-    }
-    // const getAllCoffeeCategory = await pool.query(
-    //   `SELECT * FROM coffee_category;`
-    // );
-    // res.status(200).json(getAllCoffeeCategory.rows);
-  } catch (err) {
-    res.status(400);
+    const coffeeCategoryCreated = await CoffeeCategory.create({
+      coffee_category_id: newCoffeeCategory.coffee_category_id,
+      coffee_category_name: newCoffeeCategory.coffee_category_name
+    });
+    console.log(`Created coffee category with id ${newCoffeeCategory.coffee_category_id}`);
+    return coffeeCategoryCreated; // return the created account object
+  } catch (error) {
+    console.error(`Error creating coffee category: ${error.message}`);
+    return null;
   }
-});
+};
 
-router
-  .route('/:id')
-  .get(async (req, res) => {
-    try {
-      const getCoffeeCategory = await pool.query(
-        `SELECT * FROM coffee_category WHERE coffee_category_id='${req.params.id}';`
-      );
-      res.status(200).json(getCoffeeCategory.rows);
-    } catch (err) {
-      res.status(400);
-  }})
-  .put(async (req, res) => {
-    try {
-      const { coffee_category_name } = req.body;
-      const changeCoffeeCategory = await pool.query(
-        `UPDATE coffee_category SET
-          coffee_category_name='${coffee_category_name}'
-          WHERE coffee_category_id='${req.params.id}';`
-      );
-      const getCoffeeCategory = await pool.query(
-        `SELECT * FROM coffee_category WHERE coffee_category_id='${req.params.id}';`
-      );
-      res.status(200).json(getCoffeeCategory.rows);
-    } catch (err) {
-      res.status(400);
-  }})
-  .delete(async (req, res) => {
-    try {
-      const removeCoffeeCategory = await pool.query(
-        `DELETE FROM coffee_category WHERE coffee_category_id='${req.params.id}';`
-      );
-      res.status(200).send("Delete successfully");
-    } catch (err) {
-      res.status(400);
-  }})
-
-router.post('/new', async (req, res) => {
+const updateCoffeeCategory = async (id, updatedCoffeeCategory) => {
   try {
-    const { coffee_category_id, coffee_category_name } = req.body;
-    const newCoffeeCategory = await pool.query(
-      `INSERT INTO coffee_category VALUES
-        '${coffee_category_id}', '${coffee_category_name}');`
-    );
-    const getCoffeeCategory = await pool.query(
-      `SELECT * FROM coffee_category WHERE coffee_category_id='${coffee_category_id}';`
-    );
-    res.status(200).json(getCoffeeCategory.rows);
-  } catch (err) {
-    res.status(400);
+    const coffeeCategoryUpdated = await CoffeeCategory.update(
+    {
+      coffee_category_name: updatedCoffeeCategory.coffee_category_name
+    },
+    {
+      where: { coffee_category_id: id }
+    });
+    console.log(`Updated coffee category with id ${id}`);
+    return coffeeCategoryUpdated;
+  } catch (error) {
+    console.error(`Error updating coffee category with id ${id}: ${error.message}`);
+    return null;
   }
-});
+};
 
-module.exports = router;
+const deleteCoffeeCategory = async (id) => {
+  try {
+    const coffeeCategoryDeleted = await CoffeeCategory.destroy({
+      where: { coffee_category_id: id }
+    });
+    console.log(`Deleted coffee category with id ${id}`);
+    return coffeeCategoryDeleted;
+  } catch (error) {
+    console.error(`Error deleting coffee category with id ${id}: ${error.message}`);
+    return false;
+  }
+};
+
+module.exports = {
+  getCoffeeCategoryById,
+  getAllCoffeeCategories,
+  createCoffeeCategory,
+  updateCoffeeCategory,
+  deleteCoffeeCategory
+};
