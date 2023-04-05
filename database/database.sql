@@ -27,13 +27,26 @@ CREATE TABLE coffee_storage (
         REFERENCES coffee_info(coffee_id)
 );
 
+CREATE TABLE account (
+    account_username    VARCHAR(100) NOT NULL,
+    account_password    VARCHAR(100),
+    account_displayname VARCHAR(100),
+    account_email       VARCHAR(100),
+    account_permission  INT NOT NULL,
+    PRIMARY KEY(account_username)
+);
+
 CREATE TABLE customer_info (
     customer_id            VARCHAR(20) NOT NULL,
+    account_username       VARCHAR(20),
     customer_name          VARCHAR(60),
     customer_phone_number  VARCHAR(14),
     customer_email         VARCHAR(80),
     customer_address       VARCHAR(400),
-    PRIMARY KEY(customer_id)
+    PRIMARY KEY(customer_id),
+    CONSTRAINT fk_account_username_for_customer_id
+        FOREIGN KEY (account_username)
+        REFERENCES account(account_username)
 );
 
 CREATE TABLE discount (
@@ -59,22 +72,13 @@ CREATE TABLE bill_info (
 CREATE TABLE bill_detail (
     bill_detail_id VARCHAR(20) NOT NULL,
     bill_id        VARCHAR(20) NOT NULL,
-    coffee_id      VARCHAR(20) UNIQUE,
+    coffee_id      VARCHAR(20),
     bill_amount    BIGINT CHECK (bill_amount > 0),
     PRIMARY KEY(bill_detail_id),
     CONSTRAINT fk_coffee_id_for_bill_detail FOREIGN KEY(coffee_id)
         REFERENCES coffee_info(coffee_id),
     CONSTRAINT fk_bill_id_for_bill_detail FOREIGN KEY(bill_id)
         REFERENCES bill_info(bill_id)
-);
-
-CREATE TABLE account (
-    account_username    VARCHAR(100) NOT NULL,
-    account_password    VARCHAR(100),
-    account_displayname VARCHAR(100),
-    account_email       VARCHAR(100),
-    account_permission  INT NOT NULL,
-    PRIMARY KEY(account_username)
 );
 
 \i insert_values.sql

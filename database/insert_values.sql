@@ -1,5 +1,6 @@
 INSERT INTO account VALUES
-('hiep', 'hiep', 'Hiệp', 'hiep@gmail.com', 1);
+('hiep', 'hiep', 'Hiệp', 'hiep@gmail.com', 1),
+('khoa', 'khoa', 'Khoa bảnh', 'khoa@gmail.com', 1);
 
 INSERT INTO coffee_category VALUES
 ('CPC', 'Cà phê chai'),
@@ -15,9 +16,21 @@ INSERT INTO coffee_info VALUES
 ('LegendClassicB', 'CPHT', 'Trung Nguyên Legend Classic Bịch',
   pg_read_binary_file('/tmp/TrungNguyen_LegendClassic_Bich.png'),
   142000, E'Kết hợp những loại cà phê nguyên liệu tốt nhất thế giới cùng công nghệ Nano và những bí quyết huyền diệu của Phương Đông.'
-)
+);
 
 INSERT INTO discount VALUES
-('1', 'Sales hè', 0.01)
+('1', 'Sales hè', 0.01);
 
-INSERT INTO
+INSERT INTO customer_info VALUES
+('1', 'hiep', 'Hiệp', '10237', 'hiepgay@gmail.com', '123 Hanoi'),
+('2', 'khoa', 'Khoa', '10238', 'khoa@gmail.com', '123 Hanoi');
+
+INSERT INTO bill_info VALUES
+('1', '2', '1', NULL, NOW()),
+('2', '2', '1', NULL, NOW());
+
+INSERT INTO bill_detail VALUES
+('1', '1', 'LegendClassicH', 2),
+('2', '1', 'LegendClassicB', 1),
+('3', '2', 'LegendClassicH', 1),
+('4', '2', 'LegendClassicB', 2);

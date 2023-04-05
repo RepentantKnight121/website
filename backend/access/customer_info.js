@@ -1,74 +1,125 @@
-const express = require("express");
-const router = express.Router();
+const CustomerInfo = require('../models/customer_info');
 
-// Connect to database
-const pool = require("../database/postgresql");
+const getCustomerInfoById= (id) => {
+  return new Promise((resolve, reject) => {
+    CustomerInfo.findOne({
+      raw: true,
+      attributes: [
+        'customer_id',
+        'account_username',
+        'customer_name',
+        'customer_phone_number',
+        'customer_email',
+        'customer_address'
+      ],
+      where: { customer_id: id }
+    })
+    .then((customerinfo) => {
+      if (!customerinfo) {
+        console.warn(`No customer info found with id ${id}`);
+        resolve(null);
+      } else {
+        console.log(`Customer info found with id ${id}`);
+        resolve(customerinfo);
+      }
+    })
+    .catch((error) => {
+      console.error(`Error finding customer info with id ${id}: ${error.message}`);
+      reject(error);
+    });
+  });
+};
 
-router.get("/", async (req, res) => {
+const getAllCustomerInfos = () => {
+  return new Promise((resolve, reject) => {
+    CustomerInfo.findAll({
+      raw: true,
+      attributes: [
+        'customer_id',
+        'account_username',
+        'customer_name',
+        'customer_phone_number',
+        'customer_email',
+        'customer_address'
+      ]
+    })
+    .then(customerinfos => {
+      const allCustomerInfos = customerinfos.map(customerinfo => {
+        return {
+          customer_id:           customerinfo.customer_id,
+          account_username:      customerinfo.account_username,
+          customer_name:         customerinfo.customer_name,
+          customer_phone_number: customerinfo.customer_phone_number,
+          customer_email:        customerinfo.customer_email,
+          customer_address:      customerinfo.customer_address
+        }
+      });
+      console.log(allCustomerInfos);
+      resolve(allCustomerInfos);
+    })
+    .catch(err => {
+      console.error(err);
+      reject(err);
+    });
+  });
+};
+
+const createCustomerInfo = async (newCustomerInfo) => {
   try {
-    const getAllCustomer = await pool.query(`SELECT * FROM customer_info;`);
-    res.status(200).json(getAllCustomer.rows);
-  } catch (err) {
-    res.status(400);
+    const customerInfoCreated = await CustomerInfo.create({
+      customer_id:           newCustomerInfo.customer_id,
+      account_username:      newCustomerInfo.account_username,
+      customer_name:         newCustomerInfo.customer_name,
+      customer_phone_number: newCustomerInfo.customer_phone_number,
+      customer_email:        newCustomerInfo.customer_email,
+      customer_address:      newCustomerInfo.customer_address
+    });
+    console.log(`Created customer info with id ${customerInfoCreated.discount_id}`);
+    return customerInfoCreated; // return the created account object
+  } catch (error) {
+    console.error(`Error creating customer info: ${error.message}`);
+    return null;
   }
-});
+};
 
-router
-  .route("/:id")
-  .get(async (req, res) => {
-    try {
-      const getUserByID = await pool.query(
-        `SELECT * FROM customer_info WHERE customer_id='${req.params.id}';`
-      );
-      res.status(200).json(getUserByID.rows);
-    } catch (err) {
-      res.status(400);
-  }})
-  .put(async (req, res) => {
-    try {
-      const { customer_id, customer_name, phone_number, email, address } =
-        req.body;
-      const changeCustomer_info = await pool.query(
-        `UPDATE customer_info SET
-          customer_name='${customer_name}',
-          phone_number ='${phone_number}',
-          email ='${email}',
-          address ='${address}'
-          WHERE customer_id='${req.params.id}';`
-      );
-      const getCustomerInfoByID = await pool.query(
-        `SELECT * FROM customer_info WHERE customer_id='${req.params.id}';`
-      );
-      res.status(200).json(getCustomerInfoByID.rows);
-    } catch (err) {
-      res.status(400);
-  }})
-  .delete(async (req, res) => {
-    try {
-      const removeUser = await pool.query(
-        `DELETE FROM customer_info WHERE customer_id='${req.params.id}';`
-      );
-      res.status(200).send("Delete successfully");
-    } catch (err) {
-      res.status(400);
-  }})
-
-router.post("/new", async (req, res) => {
+const updateCustomerInfo = async (id, updatedCustomerInfoData) => {
   try {
-    const { customer_id, customer_name, phone_number, email, address } =
-      req.body;
-
-    const NewUser = await pool.query(
-      `INSERT INTO customer_info VALUES
-      ('${customer_id}', '${customer_name}', '${phone_number}', '${email}', '${address}');`
-    );
-    const getNewUser = await pool.query(
-      `SELECT * FROM customer_info WHERE customer_id ='${customer_id}';`
-    );
-    res.status(200).json(getNewUser.rows);
-  } catch (err) {
-    res.status(400);
+    const customerInfoUpdated = await CustomerInfo.update(
+    {
+      account_username:      updatedCustomerInfoData.account_username,
+      customer_name:         updatedCustomerInfoData.customer_name,
+      customer_phone_number: updatedCustomerInfoData.customer_phone_number,
+      customer_email:        updatedCustomerInfoData.customer_email,
+      customer_address:      updatedCustomerInfoData.customer_address
+    },
+    {
+      where: { customer_id: id }
+    });
+    console.log(`Updated customer info with id ${id}`);
+    return customerInfoUpdated;
+  } catch (error) {
+    console.error(`Error updating customer info with id ${id}: ${error.message}`);
+    return null;
   }
-});
+};
 
-module.exports = router;
+const deleteCustomerInfo = async (id) => {
+  try {
+    const customerInfoDeleted = await CustomerInfo.destroy({
+      where: { customer_id: id }
+    });
+    console.log(`Deleted customer info with id ${id}`);
+    return customerInfoDeleted;
+  } catch (error) {
+    console.error(`Error deleting customer info with id ${id}: ${error.message}`);
+    return false;
+  }
+};
+
+module.exports = {
+  getCustomerInfoById,
+  getAllCustomerInfos,
+  createCustomerInfo,
+  updateCustomerInfo,
+  deleteCustomerInfo
+};
