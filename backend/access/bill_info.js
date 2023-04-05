@@ -1,90 +1,120 @@
-const express = require('express');
-const router = express.Router();
+const BillInfo = require('../models/bill_info');
 
-// Connect to database
-const pool = require('../database/postgresql');
+const getById= (id) => {
+  return new Promise((resolve, reject) => {
+    BillInfo.findOne({
+      raw: true,
+      attributes: [
+        'bill_id',
+        'customer_id',
+        'discount_id',
+        'customer_address',
+        'payment_time'
+      ],
+      where: { bill_id: id }
+    })
+    .then((billinfo) => {
+      if (!billinfo) {
+        console.warn(`No bill info found with id ${id}`);
+        resolve(null);
+      } else {
+        console.log(`Bill info found with id ${id}`);
+        resolve(billinfo);
+      }
+    })
+    .catch((error) => {
+      console.error(`Error finding discount with id ${id}: ${error.message}`);
+      reject(error);
+    });
+  });
+};
 
-router.get('/', async (req, res) => {
+const getAll = () => {
+  return new Promise((resolve, reject) => {
+    BillInfo.findAll({
+      raw: true,
+      attributes: [
+        'bill_id',
+        'customer_id',
+        'discount_id',
+        'customer_address',
+        'payment_time'
+      ]
+    })
+    .then(billsinfo => {
+      const allBillsInfo = billsinfo.map(billinfo => {
+        return {
+          bill_id: billinfo.bill_id,
+          customer_id: billinfo.customer_id,
+          discount_id: billinfo.discount_id,
+          customer_address: billinfo.customer_address,
+          payment_time: billinfo.payment_time
+        }
+      });
+      console.log(allBillsInfo);
+      resolve(allBillsInfo);
+    })
+    .catch(err => {
+      console.error(err);
+      reject(err);
+    });
+  });
+};
+
+const createNew = async (billinfo) => {
   try {
-    const getAllBillInfo = await pool.query(
-        `SELECT * FROM bill_info;`
-        );
-    res.status(200).json(getAllBillInfo.rows);
-  } catch (err) {
-    res.status(400);
+    const billInfoCreated = await BillInfo.create({
+      bill_id: billinfo.bill_id,
+      customer_id: billinfo.customer_id,
+      discount_id: billinfo.discount_id,
+      customer_address: billinfo.customer_address,
+      payment_time: billinfo.payment_time
+    });
+    console.log(`Created bill info with id ${billinfo.bill_id}`);
+    return billInfoCreated; // return the created account object
+  } catch (error) {
+    console.error(`Error creating bill info: ${error.message}`);
+    return null;
   }
-});
+};
 
-router
-  .route('/:id')
-  .get(async (req, res) => {
-    try {
-      const getBillInfo = await pool.query(
-        `SELECT * FROM bill_info WHERE bill_id='${req.params.id}';`
-      );
-      res.status(200).json(getBillInfo.rows);
-    } catch (err) {
-      res.status(400);
-  }})
-  .put(async (req, res) => {
-    try {
-      const {
-        customer_id,
-        discount_code_id,
-        address,
-        payment_time
-      } = req.body;
-  
-      const changeBillInfo = await pool.query(
-        `UPDATE bill_info SET
-          customer_id='${customer_id}',
-          discount_code_id='${discount_code_id}',
-          address='${address}',
-          payment_time='${payment_time}'
-          WHERE bill_id='${req.params.id}';`
-      );
-      const getBillInfoByID = await pool.query(
-        `SELECT * FROM bill_info WHERE bill_id='${req.params.id}';`
-      );
-      res.status(200).json(getBillInfoByID.rows);
-    } catch (err) {
-      res.status(400);
-  }})
-  .delete(async (req, res) => {
-    try {
-      const removeBillInfo = await pool.query(
-        `DELETE FROM bill_info WHERE bill_id='${req.params.id}';`
-      );
-      res.status(200).send('Delete successfully');
-    } catch (err) {
-      res.status(400);
-  }})
-
-router.post("/new", async (req, res) => {
+const updateById = async (id, billinfo) => {
   try {
-    const {
-      bill_id,
-      customer_id,
-      discount_code_id,
-      address,
-      payment_time
-    } = req.body;
-
-    const newBillInfo = await pool.query(
-      `INSERT INTO bill_info VALUES (
-        '${bill_id}',
-        '${customer_id}',
-        '${discount_code_id}',
-        '${address}',
-        '${payment_time}');`
-    );
-    const getNewBillInfo = await pool.query(
-      `SELECT * FROM bill_info WHERE bill_id='${bill_id}';`
-    );
-    res.status(200).json(getNewBillInfo.rows);
-  } catch (err) {
-    res.status(400);
+    const billInfoUpdated = await BillInfo.update(
+    {
+      customer_id: billinfo.customer_id,
+      discount_id: billinfo.discount_id,
+      customer_address: billinfo.customer_address,
+      payment_time: billinfo.payment_time
+    },
+    {
+      where: { bill_id: id }
+    });
+    console.log(`Updated bill info with id ${id}`);
+    return billInfoUpdated;
+  } catch (error) {
+    console.error(`Error updating bill info with id ${id}: ${error.message}`);
+    return null;
   }
-});
+};
 
-module.exports = router;
+const deleteById = async (id) => {
+  try {
+    const billInfoDeleted = await BillInfo.destroy({
+      where: { bill_id: id }
+    });
+    console.log(`Deleted bill info with id ${id}`);
+    return billInfoDeleted;
+  } catch (error) {
+    console.error(`Error deleting bill info with id ${id}: ${error.message}`);
+    return false;
+  }
+};
+
+module.exports = {
+  getById,
+  getAll,
+  createNew,
+  updateById,
+  deleteById
+};
