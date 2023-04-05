@@ -1,7 +1,7 @@
 const { DataTypes } = require('sequelize');
 const sequelize = require('../database/postgresql');
 
-const Customer_info = sequelize.define('customer_info', {
+const CustomerInfo = sequelize.define('customer_info', {
   customer_id: {
     type: DataTypes.STRING(100),
     allowNull: true,
@@ -29,4 +29,4 @@ const Customer_info = sequelize.define('customer_info', {
     timestamps: false // Bỏ qua thuộc tính `created_at` và `updated_at` tự động của Sequelize
   });
 
-module.exports = Customer_info;
+module.exports = CustomerInfo;
