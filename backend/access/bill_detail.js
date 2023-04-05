@@ -58,18 +58,19 @@ const getDetailByID= (idBill) => {
   });
 };
 
-const create = async ( idBill,  newBillDetail) => {
+const create = async ( newBillDetail) => {
   try {
+    console.log(newBillDetail);
     const BiletailDlCreated = await BillDetail.create({
         bill_detail_id : newBillDetail.bill_detail_id ,
-        bill_id : idBill ,
+        bill_id : newBillDetail.bill_id ,
         coffee_id : newBillDetail.coffee_id,
         bill_amount : newBillDetail.bill_amount
     });
-    console.log(`Created new bill detail with id ${idBill}`);
+    console.log(`Created new bill detail with id ${newBillDetail.bill_id}`);
     return BiletailDlCreated; 
   } catch (error) {
-    console.error(`Error creating new coffee storage: ${error.message}`);
+    console.error(`Error creating new bill detail: ${error.message}`);
     return null;
   }
 };
