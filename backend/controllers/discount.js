@@ -15,7 +15,7 @@ router.get('/', async (req, res) => {
 
 router
   .route(':/id')
-  .get('/:id', async (req, res) => {
+  .get(async (req, res) => {
     const id = req.params.id;
     try {
       const discount = await Discount.getDiscountById(id);
@@ -29,7 +29,7 @@ router
       res.status(500).json({ error: 'Internal Server Error' });
     }
   })
-  .put('/:id', async (req, res) => {
+  .put(async (req, res) => {
     const id = req.params.id;
     const updatedDiscountData = req.body;
     try {
@@ -44,7 +44,7 @@ router
       res.status(500).json({ error: 'Internal Server Error' });
     }
   })
-  .delete('/:id', async (req, res) => {
+  .delete(async (req, res) => {
     const id = req.params.id;
     try {
       const discountDeleted = await Discount.deleteDiscount(id);
