@@ -26,7 +26,7 @@ const CustomerInfo = sequelize.define('customer_info', {
   }, 
   {
     tableName: 'customer_info',
-    timestamps: false // Bỏ qua thuộc tính `created_at` và `updated_at` tự động của Sequelize
+    timestamps: false 
   });
 
 module.exports = CustomerInfo;
