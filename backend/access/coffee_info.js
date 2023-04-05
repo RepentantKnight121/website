@@ -77,9 +77,10 @@ const deleteCoffeeInfoByID = async (idCoffee) => {
   }
 };
 
-const updateCoffeeInfo = async ( coffee ) => {
+const updateCoffeeInfo = async ( idCoffee , coffee ) => {
   try {
-    const idCoffeeInfo = coffee.coffee_id;
+    console.log(idCoffee) ,
+    console.log(coffee);
     const CoffeeInfoUpdated = await CoffeeInfo.update(
     {
       coffee_category_id : coffee.coffee_category_id,
@@ -89,12 +90,12 @@ const updateCoffeeInfo = async ( coffee ) => {
       coffee_detail : coffee.coffee_detail
     },
     {
-      where: { coffee_id: idCoffeeInfo }
+      where: { coffee_id: idCoffee }
     });
-    console.log(`Updated coffee info with id coffee ${idCoffeeInfo}`);
+    console.log(`Updated coffee info with id coffee ${idCoffee}`);
     return CoffeeInfoUpdated;
   } catch (error) {
-    console.error(`Error updating coffee info with id coffee ${idCoffeeInfo} : ${error.message}`);
+    console.error(`Error updating coffee info with id coffee ${idCoffee} : ${error.message}`);
     return null;
   }
 };

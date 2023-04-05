@@ -7,26 +7,26 @@ const CoffeeInfo = sequelize.define('coffee_info', {
     allowNull: false,
     primaryKey: true,
   },
-  categoryId: {
+  coffee_category_id: {
     type: DataTypes.STRING(50),
     references: {
       model: 'coffee_category', // Tên bảng chứa khóa chính
       key: 'coffee_category_id' // Tên cột khóa chính tham chiếu
     }
   },
-  name: {
+  coffee_name: {
     type: DataTypes.STRING(50),
     allowNull: false
   },
-  image: {
+  coffee_image: {
     type: DataTypes.BLOB('long'),
-    allowNull: false
+    allowNull: true
   },
-  price: {
+  coffee_price: {
     type: DataTypes.BIGINT,
     allowNull: false
   },
-  detail: {
+  coffee_detail: {
     type: DataTypes.STRING(700),
     allowNull: false  
   },

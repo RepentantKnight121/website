@@ -23,7 +23,7 @@ router
   }})
   .put(async (req, res) => {
     try {
-      await CoffeeInfo.updateCoffeeStorage(req.body);
+      await CoffeeInfo.updateCoffeeInfo( req.params.id , req.body );
       res.send("Updated successfully");
     } catch (err) {
       res.status(400);
@@ -35,7 +35,8 @@ router
     } catch (err) {
       res.status(400);
   }})
-  .post( async (req, res) => {
+
+router.post( "/" , async (req, res) => {
     const newCoffeeInfo = req.body;
     try {
     const CoffeeInfoCreated = await CoffeeInfo.createCoffeeInfo(newCoffeeInfo);
