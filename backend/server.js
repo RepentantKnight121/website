@@ -27,7 +27,7 @@ app.use(`${apiVersion}/account`, accountRouter);
 app.use(`${apiVersion}/bill-detail`, billDetailRouter);
 app.use(`${apiVersion}/bill-info`, billInfoRouter);
 app.use(`${apiVersion}/coffee-category`, coffeeCategoryRouter);
-app.use(`${apiVersion}/coffee-storage`, coffeeCategoryRouter);
+app.use(`${apiVersion}/coffee-storage`, coffeeStorageRouter);
 app.use(`${apiVersion}/coffee-info`, coffeeInfoRouter);
 app.use(`${apiVersion}/customer-info`, customerInfoRouter);
 app.use(`${apiVersion}/discount`, discountRouter);
