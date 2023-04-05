@@ -1,7 +1,7 @@
 const { DataTypes } = require('sequelize');
 const sequelize = require('../database/postgresql');
 
-const CustomerInfo = sequelize.define('customer_info', {
+const Customer_info = sequelize.define('customer_info', {
   customer_id: {
     type: DataTypes.STRING(100),
     allowNull: true,
@@ -29,4 +29,4 @@ const CustomerInfo = sequelize.define('customer_info', {
     timestamps: false 
   });
 
-module.exports = CustomerInfo;
+module.exports = Customer_info;
