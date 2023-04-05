@@ -2,7 +2,7 @@ const { DataTypes } = require('sequelize');
 const sequelize = require('../database/postgresql');
 
 const BillDetail = sequelize.define('bill_detail', {
-  id: {
+  bill_detail_id: {
     type: DataTypes.STRING(20),
     allowNull: false,
     primaryKey: true,
@@ -21,7 +21,7 @@ const BillDetail = sequelize.define('bill_detail', {
       key: 'coffee_id' 
     }
   },
-  amount: {
+  bill_amount: {
     type: DataTypes.BIGINT,
     allowNull: false,
   }
