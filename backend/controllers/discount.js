@@ -29,7 +29,7 @@ router
       res.status(500).json({ error: 'Internal Server Error' });
     }
   })
-  .put( async (req, res) => {
+  .put(async (req, res) => {
     const id = req.params.id;
     const updatedDiscountData = req.body;
     try {
@@ -44,7 +44,7 @@ router
       res.status(500).json({ error: 'Internal Server Error' });
     }
   })
-  .delete( async (req, res) => {
+  .delete(async (req, res) => {
     const id = req.params.id;
     try {
       const discountDeleted = await Discount.deleteDiscount(id);
