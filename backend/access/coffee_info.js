@@ -1,122 +1,128 @@
-const express = require('express');
-const router = express.Router();
+const CoffeeInfo = require("../models/coffee_info");
 
-// Connect to database
-const pool = require('../database/postgresql');
+const getAllCoffeeInfo = () =>{
+  return new Promise((resolve, reject) => {
+    CoffeeInfo.findAll({ 
+      raw: true,
+      attributes: [
+        'coffee_id',
+        'coffee_category_id',
+        'coffee_name',
+        'coffee_image',
+        'coffee_price',
+        'coffee_detail'
+      ]
+    })
+    .then(coffees => {
+        const allCoffees = coffees.map(coffee => {
+          return {
+            coffee_id : coffee.coffee_id ,
+            coffee_category_id : coffee.coffee_category_id ,
+            coffee_name : coffee.coffee_name ,
+            coffee_image: coffee.coffee_image ,
+            coffee_price : coffee.coffee_price ,
+            coffee_detail : coffee.coffee_detail
+          }
+        });
+        console.log(allCoffees);
+        resolve(allCoffees);
+      })
+      .catch(err => {
+        console.error(err);
+        reject(err);
+      });
+  });
+}
 
-router.get('/', async (req, res) => {
+const getCoffeeInfoByID = (idCoffee) => {
+  return new Promise((resolve, reject) => {
+    CoffeeInfo.findOne({ 
+      raw: true,
+      attributes: [
+        'coffee_id',
+        'coffee_category_id',
+        'coffee_name',
+        'coffee_image',
+        'coffee_price',
+        'coffee_detail'
+      ],
+      where: { coffee_id: idCoffee }
+    })
+    .then((Coffee) => {
+      if (!Coffee) {
+        console.warn(`No coffee info found with id coffee ${idCoffee}`);
+        resolve(null);
+      } else {
+        console.log(`Coffee info found with id coffee  ${idCoffee}`);
+        resolve(Coffee);
+      }
+    })
+    .catch((error) => {
+      console.error(`Error finding coffee info found with id coffee ${idCoffee}: ${error.message}`);
+      reject(error);
+    });
+  });
+};
+
+const deleteCoffeeInfoByID = async (idCoffee) => {
   try {
-    const getAllCoffeeInfo = await pool.query(
-      `SELECT coffee_id,
-              coffee_category_id,
-              coffee_name,
-              ENCODE(coffee_image,'base64') AS coffee_image,
-              coffee_price,
-              coffee_detail FROM coffee_info;`
-    );
-    res.status(200).json(getAllCoffeeInfo.rows);
-  } catch (err) {
-    res.status(400);
+    const CoffeeStorageDeleted = await CoffeeInfo.destroy({
+      where: { coffee_id: idCoffee }
+    });
+    console.log(`Deleted coffee info with id coffee ${idCoffee}`);
+    return CoffeeStorageDeleted;
+  } catch (error) {
+    console.error(`Error deleting coffee info with id coffee ${idCoffee}: ${error.message}`);
+    return false;
   }
-});
+};
 
-router.get('/same-category', async (req, res) => {
+const updateCoffeeInfo = async ( idCoffee , coffee ) => {
   try {
-    const { coffee_category_id, coffee_id } = res.body;
-    const getAllCoffeeInfo = await pool.query(
-      `SELECT coffee_id,
-              coffee_category_id,
-              coffee_name,
-              ENCODE(coffee_image,'base64') AS coffee_image,
-              coffee_price,
-              coffee_detail FROM coffee_info, coffee_category
-        WHERE coffee_category_id IN ;`
-    );
-    res.status(200).json(getAllCoffeeInfo.rows);
-  } catch (err) {
-    res.status(400);
-    res.send(err.message);
+    console.log(idCoffee) ,
+    console.log(coffee);
+    const CoffeeInfoUpdated = await CoffeeInfo.update(
+    {
+      coffee_category_id : coffee.coffee_category_id,
+      coffee_name : coffee.coffee_name,
+      coffee_image : coffee.coffee_image ,
+      coffee_price : coffee.coffee_price,
+      coffee_detail : coffee.coffee_detail
+    },
+    {
+      where: { coffee_id: idCoffee }
+    });
+    console.log(`Updated coffee info with id coffee ${idCoffee}`);
+    return CoffeeInfoUpdated;
+  } catch (error) {
+    console.error(`Error updating coffee info with id coffee ${idCoffee} : ${error.message}`);
+    return null;
   }
-})
+};
 
-router
-  .route('/:id')
-  .get(async (req, res) => {
-    try {
-      const getCoffeeInfoByID = await pool.query(
-        `SELECT coffee_category_id,
-                coffee_name,
-                ENCODE(coffee_image,'base64') AS coffee_image,
-                coffee_price,
-                coffee_detail FROM coffee_info WHERE coffee_id='${req.params.id}';`
-      );
-      res.status(200).json(getCoffeeInfoByID.rows);
-    } catch (err) {
-      res.status(400);
-  }})
-  .put(async (req, res) => {
-    try {
-      const {
-        coffee_category_id,
-        coffee_name,
-        coffee_image,
-        coffee_price,
-        coffee_detail
-      } = req.body;
-  
-      const changeCoffeeInfo = await pool.query(
-        `UPDATE coffee_info SET
-                coffee_category_id='${coffee_category_id}',
-                coffee_name='${coffee_name}',
-                coffee_image='${coffee_image}',
-                coffee_price='${coffee_price}',
-                coffee_detail='${coffee_detail}')
-                WHERE coffee_id='${req.params.id}';`
-      );
-      const getChangeCoffeeByID = await pool.query(
-        `SELECT * FROM coffee_info WHERE coffee_id='${req.params.id}';`
-      );
-  
-      res.status(200).json(getChangeCoffeeByID.rows);
-    } catch (err) {
-      res.status(400);
-  }})
-  .delete(async (req, res) => {
-    try {  
-      const removeCoffee = await pool.query(
-        `DELETE FROM coffee_info WHERE coffee_id='${req.params.id}';`
-      );
-      res.status(200).send("Delete successfully");
-    } catch (err) {
-      res.status(400);
-  }})
-
-router.post("/new", async (req, res) => {
+const createCoffeeInfo = async ( coffee ) => {
   try {
-    const {
-      coffee_id,
-      coffee_category_id,
-      coffee_name,
-      coffee_image,
-      coffee_price,
-      coffee_detail
-    } = req.body;
-    await pool.query(
-      `INSERT INTO coffee_info VALUES (
-        '${coffee_id}',
-        '${coffee_category_id}',
-        '${coffee_name}',
-        '${coffee_image}',
-        '${coffee_price}',
-        '${coffee_detail}');`
-    );
-    const getNewCoffeeInfo = await pool.query(
-      `SELECT * FROM coffee_info WHERE coffee_id='${bill_id}';`
-    );
-    res.status(200).json(getNewCoffeeInfo.rows);
-  } catch (err) {
-    res.status(400);
+    const CoffeeInfoCreated = await CoffeeInfo.create(
+    {
+      coffee_id :coffee.coffee_id ,
+      coffee_category_id : coffee.coffee_category_id,
+      coffee_name : coffee.coffee_name,
+      coffee_image : coffee.coffee_image ,
+      coffee_price : coffee.coffee_price,
+      coffee_detail : coffee.coffee_detail
+    });
+    console.log(`Create coffee info !`);
+    return CoffeeInfoCreated;
+  } catch (error) {
+    console.error(`Error creating coffee info with id coffee : ${error.message}`);
+    return null;
   }
-});
+};
 
-module.exports = router;
+module.exports = {
+  getAllCoffeeInfo ,
+  getCoffeeInfoByID,
+  deleteCoffeeInfoByID,
+  updateCoffeeInfo,
+  createCoffeeInfo
+};
