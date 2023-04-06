@@ -29,5 +29,5 @@ const BillDetail = sequelize.define('bill_detail', {
     tableName: 'bill_detail',
     timestamps: false 
 });
-                                        
+
 module.exports = BillDetail;
