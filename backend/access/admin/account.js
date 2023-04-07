@@ -1,4 +1,34 @@
-const Account = require('../models/account');
+const Account = require('../../models/account');
+
+const getAll = (query) => {
+  const page = parseInt(query.page) || 1; // default to page 1 if query.page is not specified or is invalid
+  const limit = 8;
+  const offset = (page - 1) * limit;
+  
+  return new Promise((resolve, reject) => {
+    CoffeeInfo.findAll({ 
+      raw: true,
+      attributes: [
+        'account_username',
+        'account_password',
+        'account_displayname',
+        'account_email',
+        'account_permission'
+      ],
+    })
+    .then(coffees => {
+      const allAccounts = coffees.map(({ coffee_id, coffee_category_id, coffee_name, coffee_image, coffee_price, coffee_detail }) => {
+        return { coffee_id, coffee_category_id, coffee_name, coffee_image, coffee_price, coffee_detail }
+      });
+      console.log(allCoffees);
+      resolve(allCoffees);
+    })
+    .catch(error => {
+      console.error(error.message);
+      reject(error);
+    });
+  });
+};
 
 const getAccountByUsername = (username) => {
   return new Promise((resolve, reject) => {

@@ -1,6 +1,10 @@
-const CoffeeInfo = require("../models/coffee_info");
+const CoffeeInfo = require("../../models/coffee_info");
 
-const getAll = () =>{
+const getAll = (query) => {
+  const page = parseInt(query.page) || 1; // default to page 1 if query.page is not specified or is invalid
+  const limit = 8;
+  const offset = (page - 1) * limit;
+  
   return new Promise((resolve, reject) => {
     CoffeeInfo.findAll({ 
       raw: true,
@@ -11,28 +15,21 @@ const getAll = () =>{
         'coffee_image',
         'coffee_price',
         'coffee_detail'
-      ]
+      ],
     })
     .then(coffees => {
-        const allCoffees = coffees.map(coffee => {
-          return {
-            coffee_id : coffee.coffee_id ,
-            coffee_category_id : coffee.coffee_category_id ,
-            coffee_name : coffee.coffee_name ,
-            coffee_image: coffee.coffee_image ,
-            coffee_price : coffee.coffee_price ,
-            coffee_detail : coffee.coffee_detail
-          }
-        });
-        console.log(allCoffees);
-        resolve(allCoffees);
-      })
-      .catch(err => {
-        console.error(err);
-        reject(err);
+      const allCoffees = coffees.map(({ coffee_id, coffee_category_id, coffee_name, coffee_image, coffee_price, coffee_detail }) => {
+        return { coffee_id, coffee_category_id, coffee_name, coffee_image, coffee_price, coffee_detail }
       });
+      console.log(allCoffees);
+      resolve(allCoffees);
+    })
+    .catch(error => {
+      console.error(error.message);
+      reject(error);
+    });
   });
-}
+};
 
 const getByID = (idCoffee) => {
   return new Promise((resolve, reject) => {
@@ -76,7 +73,7 @@ const getSameCategory = async (query) => {
         'coffee_price',
         'coffee_detail'
       ],
-      where: { coffee_id: query.coffee_category_id }
+      where: { coffee_id: query.cc }
     })
     .then((coffeeinfo) => {
       if (!coffeeinfo) {

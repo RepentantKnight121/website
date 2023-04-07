@@ -1,5 +1,5 @@
 const { parse } = require("dotenv");
-const CoffeeStorage = require("../models/coffee_storage");
+const CoffeeStorage = require("../../models/coffee_storage");
 const express = require('express');
 const router = express.Router();
 // Lấy list info về số lượng cà phê dự trữ trong kho

@@ -1,11 +1,12 @@
 const express = require('express');
 const router = express.Router();
-const CoffeeInfo = require("../access/coffee_info");
+const CoffeeInfo = require("../../access/admin/coffee_info");
 
 
 router.get('/', async (req, res) => {
   try {
-    const getAllCoffeeInfo = await CoffeeInfo.getAll();
+    const query = req.query;
+    const getAllCoffeeInfo = await CoffeeInfo.getAll(query);
     res.status(200).json(getAllCoffeeInfo);
   } catch (err) {
     res.status(400);
@@ -23,7 +24,7 @@ router
   }})
   .put(async (req, res) => {
     try {
-      await CoffeeInfo.updateByID( req.params.id , req.body );
+      await CoffeeInfo.updateByID(req.params.id , req.body);
       res.send("Updated successfully");
     } catch (err) {
       res.status(400);
@@ -35,21 +36,6 @@ router
     } catch (err) {
       res.status(400);
   }})
-
-router.get('/search', async (req, res) => {
-  const queryData = req.query;
-  try {
-    const CoffeeInfoByCoffeeCategory = await CoffeeInfo.getSameCategory(queryData);
-    if (!CoffeeInfoByCoffeeCategory) {
-        res.status(500).json({ error: 'Error finding coffee info have same coffee category' });
-      } else {
-        res.status(201).json(CoffeeInfoByCoffeeCategory);
-      }
-  } catch (err) {
-    console.error(err);
-    res.status(500).json({ error: 'Internal Server Error' });
-  }
-});
 
 router.post('/', async (req, res) => {
   const newCoffeeInfo = req.body;

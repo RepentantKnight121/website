@@ -1,4 +1,4 @@
-const Discount = require('../models/discount');
+const Discount = require('../../models/discount');
 
 const getDiscountById= (id) => {
   return new Promise((resolve, reject) => {

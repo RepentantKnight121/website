@@ -1,4 +1,4 @@
-const CoffeeCategory = require('../models/coffee_category');
+const CoffeeCategory = require('../../models/coffee_category');
 
 const getCoffeeCategoryById = (id) => {
   return new Promise((resolve, reject) => {

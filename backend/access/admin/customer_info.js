@@ -1,4 +1,4 @@
-const CustomerInfo = require('../models/customer_info');
+const CustomerInfo = require('../../models/customer_info');
 
 const getCustomerInfoById= (id) => {
   return new Promise((resolve, reject) => {

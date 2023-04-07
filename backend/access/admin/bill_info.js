@@ -1,4 +1,4 @@
-const BillInfo = require('../models/bill_info');
+const BillInfo = require('../../models/bill_info');
 
 const getById= (id) => {
   return new Promise((resolve, reject) => {

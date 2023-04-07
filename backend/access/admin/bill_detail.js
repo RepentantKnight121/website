@@ -1,4 +1,4 @@
-const BillDetail = require("../models/bill_detail");
+const BillDetail = require("../../models/bill_detail");
 
 const getAll = () =>{
   return new Promise((resolve, reject) => {

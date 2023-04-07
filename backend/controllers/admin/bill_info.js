@@ -1,7 +1,7 @@
 const express = require('express');
 const router = express.Router();
 
-const BillInfo = require('../access/bill_info');
+const BillInfo = require('../../access/admin/bill_info');
 
 router.get('/', async (req, res) => {
   try {

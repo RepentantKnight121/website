@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const CoffeeStorage = require("../access/coffee_storage");
+const CoffeeStorage = require("../../access/admin/coffee_storage");
 
 router.get('/', async (req, res) => {
   try {

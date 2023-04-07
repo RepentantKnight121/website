@@ -1,7 +1,7 @@
 const express = require('express');
 const router = express.Router();
 
-const CoffeeCategory = require('../access/coffee_category');
+const CoffeeCategory = require('../../access/admin/coffee_category');
 
 router.get('/', async (req, res) => {
   try {
