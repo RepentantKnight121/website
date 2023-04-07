@@ -14,23 +14,23 @@ const apiVersion = '/api';
 const PORT = process.env.PORT;
 
 // Các router sử dụng
-const accountRouter = require('./controllers/account');
-const billDetailRouter = require('./controllers/bill_detail');
-const billInfoRouter = require('./controllers/bill_info');
-const coffeeCategoryRouter = require('./controllers/coffee_category');
-const coffeeStorageRouter = require('./controllers/coffee_storage');
-const coffeeInfoRouter = require('./controllers/coffee_info');
-const customerInfoRouter = require('./controllers/customer_info');
-const discountRouter = require('./controllers/discount');
+const accountAdminRouter = require('./controllers/admin/account');
+const billDetailAdminRouter = require('./controllers/admin/bill_detail');
+const billInfoAdminRouter = require('./controllers/admin/bill_info');
+const coffeeCategoryAdminRouter = require('./controllers/admin/coffee_category');
+const coffeeStorageAdminRouter = require('./controllers/admin/coffee_storage');
+const coffeeInfoAdminRouter = require('./controllers/admin/coffee_info');
+const customerInfoAdminRouter = require('./controllers/admin/customer_info');
+const discountAdminRouter = require('./controllers/admin/discount');
 
-app.use(`${apiVersion}/account`, accountRouter);
-app.use(`${apiVersion}/bill-detail`, billDetailRouter);
-app.use(`${apiVersion}/bill-info`, billInfoRouter);
-app.use(`${apiVersion}/coffee-category`, coffeeCategoryRouter);
-app.use(`${apiVersion}/coffee-storage`, coffeeStorageRouter);
-app.use(`${apiVersion}/coffee-info`, coffeeInfoRouter);
-app.use(`${apiVersion}/customer-info`, customerInfoRouter);
-app.use(`${apiVersion}/discount`, discountRouter);
+app.use(`${apiVersion}/admin/account`, accountAdminRouter);
+app.use(`${apiVersion}/admin/bill-detail`, billDetailAdminRouter);
+app.use(`${apiVersion}/admin/bill-info`, billInfoAdminRouter);
+app.use(`${apiVersion}/admin/coffee-category`, coffeeCategoryAdminRouter);
+app.use(`${apiVersion}/admin/coffee-storage`, coffeeStorageAdminRouter);
+app.use(`${apiVersion}/admin/coffee-info`, coffeeInfoAdminRouter);
+app.use(`${apiVersion}/admin/customer-info`, customerInfoAdminRouter);
+app.use(`${apiVersion}/admin/discount`, discountAdminRouter);
 
 app.listen(PORT, () => {
   console.log(`server started at port ${PORT}`);
