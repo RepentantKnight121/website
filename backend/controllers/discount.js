@@ -1,11 +1,12 @@
 const express = require('express');
 const router = express.Router();
 
-const Discount = require('../../access/admin/discount');
+const Discount = require('../access/discount');
 
 router.get('/', async (req, res) => {
   try {
-    const allDiscounts = await Discount.getAllDiscounts();
+    const query = req.query;
+    const allDiscounts = await Discount.getAll(query);
     res.status(200).json(allDiscounts);
   } catch (err) {
     console.error(err);
@@ -18,7 +19,7 @@ router
   .get(async (req, res) => {
     const id = req.params.id;
     try {
-      const discount = await Discount.getDiscountById(id);
+      const discount = await Discount.getByID(id);
       if (discount) {
         res.status(200).json(discount);
       } else {
@@ -33,7 +34,7 @@ router
     const id = req.params.id;
     const updatedDiscountData = req.body;
     try {
-      const discountUpdated = await Discount.updateDiscount(id, updatedDiscountData);
+      const discountUpdated = await Discount.updateByID(id, updatedDiscountData);
       if (!discountUpdated) {
         res.status(404).json({ error: 'Discount not found' });
       } else {
@@ -47,7 +48,7 @@ router
   .delete(async (req, res) => {
     const id = req.params.id;
     try {
-      const discountDeleted = await Discount.deleteDiscount(id);
+      const discountDeleted = await Discount.deleteByID(id);
       if (!discountDeleted) {
         res.status(404).json({ error: 'Discount not found' });
       } else {
@@ -62,7 +63,7 @@ router
 router.post('/', async (req, res) => {
   const newDiscountData = req.body;
   try {
-    const discountCreated = await Discount.createDiscount(newDiscountData);
+    const discountCreated = await Discount.createNew(newDiscountData);
     if (!discountCreated) {
       res.status(500).json({ error: 'Error creating account' });
     } else {

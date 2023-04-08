@@ -1,6 +1,38 @@
-const CoffeeCategory = require('../../models/coffee_category');
+const CoffeeCategory = require('../models/coffee_category');
 
-const getCoffeeCategoryById = (id) => {
+const getAll = (query) => {
+  const pageQuery = parseInt(query.page) || 1; // default to page 1 if query.page is not specified or is invalid
+  const limitQuery = query.limit;
+  const offsetQuery = (pageQuery - 1) * limitQuery;
+
+  return new Promise((resolve, reject) => {
+    CoffeeCategory.findAll({
+      raw: true,
+      attributes: [
+        'coffee_category_id',
+        'coffee_category_name'
+      ],
+      limit: limitQuery,
+      offset: offsetQuery
+    })
+    .then(coffeecategories => {
+      const allCoffeeCategories = coffeecategories.map(coffeecategory => {
+        return {
+          coffee_category_id: coffeecategory.coffee_category_id,
+          coffee_category_name: coffeecategory.coffee_category_name
+        }
+      });
+      console.log(allCoffeeCategories);
+      resolve(allCoffeeCategories);
+    })
+    .catch(err => {
+      console.error(err);
+      reject(err);
+    });
+  });
+};
+
+const getByID = (id) => {
   return new Promise((resolve, reject) => {
     CoffeeCategory.findOne({
       raw: true,
@@ -26,33 +58,7 @@ const getCoffeeCategoryById = (id) => {
   });
 };
 
-const getAllCoffeeCategories = () => {
-  return new Promise((resolve, reject) => {
-    CoffeeCategory.findAll({
-      raw: true,
-      attributes: [
-        'coffee_category_id',
-        'coffee_category_name'
-      ]
-    })
-    .then(coffeecategories => {
-      const allCoffeeCategories = coffeecategories.map(coffeecategory => {
-        return {
-          coffee_category_id: coffeecategory.coffee_category_id,
-          coffee_category_name: coffeecategory.coffee_category_name
-        }
-      });
-      console.log(allCoffeeCategories);
-      resolve(allCoffeeCategories);
-    })
-    .catch(err => {
-      console.error(err);
-      reject(err);
-    });
-  });
-};
-
-const createCoffeeCategory = async (newCoffeeCategory) => {
+const createNew = async (newCoffeeCategory) => {
   try {
     const coffeeCategoryCreated = await CoffeeCategory.create({
       coffee_category_id: newCoffeeCategory.coffee_category_id,
@@ -66,7 +72,7 @@ const createCoffeeCategory = async (newCoffeeCategory) => {
   }
 };
 
-const updateCoffeeCategory = async (id, updatedCoffeeCategory) => {
+const updateByID = async (id, updatedCoffeeCategory) => {
   try {
     const coffeeCategoryUpdated = await CoffeeCategory.update(
     {
@@ -83,7 +89,7 @@ const updateCoffeeCategory = async (id, updatedCoffeeCategory) => {
   }
 };
 
-const deleteCoffeeCategory = async (id) => {
+const deleteByID = async (id) => {
   try {
     const coffeeCategoryDeleted = await CoffeeCategory.destroy({
       where: { coffee_category_id: id }
@@ -97,9 +103,9 @@ const deleteCoffeeCategory = async (id) => {
 };
 
 module.exports = {
-  getCoffeeCategoryById,
-  getAllCoffeeCategories,
-  createCoffeeCategory,
-  updateCoffeeCategory,
-  deleteCoffeeCategory
+  getAll,
+  getByID,
+  createNew,
+  updateByID,
+  deleteByID
 };

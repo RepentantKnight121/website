@@ -1,15 +1,21 @@
-const BillDetail = require("../../models/bill_detail");
+const BillDetail = require("../models/bill_detail");
 
-const getAll = () =>{
+const getAll = (query) =>{
+  const pageQuery = parseInt(query.page) || 1; // default to page 1 if query.page is not specified or is invalid
+  const limitQuery = query.limit;
+  const offsetQuery = (pageQuery - 1) * limitQuery;
+
   return new Promise((resolve, reject) => {
     BillDetail.findAll({ 
       raw: true,
       attributes: [
         'bill_detail_id',
         'bill_id',
-        "coffee_id",
-        "bill_amount"
-      ]
+        'coffee_id',
+        'bill_amount'
+      ],
+      limit: limitQuery,
+      offset: offsetQuery
     })
     .then(details => {
       const allDetail = details.map(detail => {
@@ -30,15 +36,15 @@ const getAll = () =>{
   });
 }
 // Lấy danh sách bill_detail bằng id Bill
-const getDetailByID= (idBill) => {
+const getByID= (idBill) => {
   return new Promise((resolve, reject) => {
     BillDetail.findAll({ 
       raw: true,
       attributes: [
         'bill_detail_id',
         'bill_id',
-        "coffee_id",
-        "bill_amount"
+        'coffee_id',
+        'bill_amount'
       ],
       where: { bill_id: idBill }
     })
@@ -109,8 +115,8 @@ const update = async (idDetail, dataUpdate) => {
 
 module.exports = {
     getAll,
+    getByID,
     update,
     remove,
-    create,
-    getDetailByID
+    create
 };

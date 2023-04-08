@@ -1,11 +1,12 @@
 const express = require('express');
 const router = express.Router();
 
-const BillDetail = require("../../access/admin/bill_detail");
+const BillDetail = require("../access/bill_detail");
 
 router.get('/', async (req, res) => {
   try {
-    const getAllBillDetail = await BillDetail.getAll();
+    const query = req.query;
+    const getAllBillDetail = await BillDetail.getAll(query);
     res.status(200).json(getAllBillDetail);
   } catch (err) {
     res.status(400);
@@ -16,7 +17,7 @@ router
   .route('/:id')
   .get(async (req, res) => {
     try {
-      const getBillDetail = await BillDetail.getDetailByID(req.params.id);
+      const getBillDetail = await BillDetail.getByID(req.params.id);
       res.status(200).json(getBillDetail);
     } catch (err) {
       res.status(400);
@@ -24,7 +25,7 @@ router
   .put(async (req, res) => {
     try {
       await BillDetail.update( req.params.id , req.body);
-      res.send("Updated successfully");
+      res.send('Updated successfully');
     } catch (err) {
       res.status(500).json({ error: 'Internal Server Error' });
   }})

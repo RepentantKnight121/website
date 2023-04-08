@@ -1,6 +1,40 @@
-const Discount = require('../../models/discount');
+const Discount = require('../models/discount');
 
-const getDiscountById= (id) => {
+const getAll = (query) => {
+  const pageQuery = parseInt(query.page) || 1; // default to page 1 if query.page is not specified or is invalid
+  const limitQuery = query.limit;
+  const offsetQuery = (pageQuery - 1) * limitQuery;
+
+  return new Promise((resolve, reject) => {
+    Discount.findAll({
+      raw: true,
+      attributes: [
+        'discount_id',
+        'discount_event_name',
+        'discount_percent'
+      ],
+      limit: limitQuery,
+      offset: offsetQuery,
+    })
+    .then(discounts => {
+      const allDiscounts = discounts.map(discount => {
+        return {
+          discount_id:         discount.discount_id,
+          discount_event_name: discount.discount_event_name,
+          discount_percent:    discount.discount_percent
+        }
+      });
+      console.log(allDiscounts);
+      resolve(allDiscounts);
+    })
+    .catch(err => {
+      console.error(err);
+      reject(err);
+    });
+  });
+};
+
+const getByID = (id) => {
   return new Promise((resolve, reject) => {
     Discount.findOne({
       raw: true,
@@ -27,35 +61,7 @@ const getDiscountById= (id) => {
   });
 };
 
-const getAllDiscounts = () => {
-  return new Promise((resolve, reject) => {
-    Discount.findAll({
-      raw: true,
-      attributes: [
-        'discount_id',
-        'discount_event_name',
-        'discount_percent'
-      ]
-    })
-    .then(discounts => {
-      const allDiscounts = discounts.map(discount => {
-        return {
-          discount_id:         discount.discount_id,
-          discount_event_name: discount.discount_event_name,
-          discount_percent:    discount.discount_percent
-        }
-      });
-      console.log(allDiscounts);
-      resolve(allDiscounts);
-    })
-    .catch(err => {
-      console.error(err);
-      reject(err);
-    });
-  });
-};
-
-const createDiscount = async (newDiscount) => {
+const createNew = async (newDiscount) => {
   try {
     const discountCreated = await Discount.create({
       discount_id:         newDiscount.discount_id,
@@ -70,7 +76,7 @@ const createDiscount = async (newDiscount) => {
   }
 };
 
-const updateDiscount = async (id, updatedDiscountData) => {
+const updateByID = async (id, updatedDiscountData) => {
   try {
     const discountUpdated = await Discount.update(
     {
@@ -88,7 +94,7 @@ const updateDiscount = async (id, updatedDiscountData) => {
   }
 };
 
-const deleteDiscount = async (id) => {
+const deleteByID = async (id) => {
   try {
     const discountDeleted = await Discount.destroy({
       where: { discount_id: id }
@@ -102,9 +108,9 @@ const deleteDiscount = async (id) => {
 };
 
 module.exports = {
-  getDiscountById,
-  getAllDiscounts,
-  createDiscount,
-  updateDiscount,
-  deleteDiscount
+  getAll,
+  getByID,
+  createNew,
+  updateByID,
+  deleteByID
 };

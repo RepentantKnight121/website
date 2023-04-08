@@ -1,6 +1,44 @@
-const BillInfo = require('../../models/bill_info');
+const BillInfo = require('../models/bill_info');
 
-const getById= (id) => {
+const getAll = (query) => {
+  const pageQuery = parseInt(query.page) || 1; // default to page 1 if query.page is not specified or is invalid
+  const limitQuery = query.limit;
+  const offsetQuery = (pageQuery - 1) * limitQuery;
+
+  return new Promise((resolve, reject) => {
+    BillInfo.findAll({
+      raw: true,
+      attributes: [
+        'bill_id',
+        'customer_id',
+        'discount_id',
+        'customer_address',
+        'payment_time'
+      ],
+      limit: limitQuery,
+      offset: offsetQuery
+    })
+    .then(billsinfo => {
+      const allBillsInfo = billsinfo.map(billinfo => {
+        return {
+          bill_id: billinfo.bill_id,
+          customer_id: billinfo.customer_id,
+          discount_id: billinfo.discount_id,
+          customer_address: billinfo.customer_address,
+          payment_time: billinfo.payment_time
+        }
+      });
+      console.log(allBillsInfo);
+      resolve(allBillsInfo);
+    })
+    .catch(err => {
+      console.error(err);
+      reject(err);
+    });
+  });
+};
+
+const getByID = (id) => {
   return new Promise((resolve, reject) => {
     BillInfo.findOne({
       raw: true,
@@ -29,38 +67,6 @@ const getById= (id) => {
   });
 };
 
-const getAll = () => {
-  return new Promise((resolve, reject) => {
-    BillInfo.findAll({
-      raw: true,
-      attributes: [
-        'bill_id',
-        'customer_id',
-        'discount_id',
-        'customer_address',
-        'payment_time'
-      ]
-    })
-    .then(billsinfo => {
-      const allBillsInfo = billsinfo.map(billinfo => {
-        return {
-          bill_id: billinfo.bill_id,
-          customer_id: billinfo.customer_id,
-          discount_id: billinfo.discount_id,
-          customer_address: billinfo.customer_address,
-          payment_time: billinfo.payment_time
-        }
-      });
-      console.log(allBillsInfo);
-      resolve(allBillsInfo);
-    })
-    .catch(err => {
-      console.error(err);
-      reject(err);
-    });
-  });
-};
-
 const createNew = async (billinfo) => {
   try {
     const billInfoCreated = await BillInfo.create({
@@ -78,7 +84,7 @@ const createNew = async (billinfo) => {
   }
 };
 
-const updateById = async (id, billinfo) => {
+const updateByID = async (id, billinfo) => {
   try {
     const billInfoUpdated = await BillInfo.update(
     {
@@ -98,7 +104,7 @@ const updateById = async (id, billinfo) => {
   }
 };
 
-const deleteById = async (id) => {
+const deleteByID = async (id) => {
   try {
     const billInfoDeleted = await BillInfo.destroy({
       where: { bill_id: id }
@@ -112,9 +118,9 @@ const deleteById = async (id) => {
 };
 
 module.exports = {
-  getById,
+  getByID,
   getAll,
   createNew,
-  updateById,
-  deleteById
+  updateByID,
+  deleteByID
 };

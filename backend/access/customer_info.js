@@ -1,6 +1,46 @@
-const CustomerInfo = require('../../models/customer_info');
+const CustomerInfo = require('../models/customer_info');
 
-const getCustomerInfoById= (id) => {
+const getAll = (query) => {
+  const pageQuery = parseInt(query.page) || 1; // default to page 1 if query.page is not specified or is invalid
+  const limitQuery = query.limit;
+  const offsetQuery = (pageQuery - 1) * limitQuery;
+
+  return new Promise((resolve, reject) => {
+    CustomerInfo.findAll({
+      raw: true,
+      attributes: [
+        'customer_id',
+        'account_username',
+        'customer_name',
+        'customer_phone_number',
+        'customer_email',
+        'customer_address'
+      ],
+      limit: limitQuery,
+      offset: offsetQuery,
+    })
+    .then(customerinfos => {
+      const allCustomerInfos = customerinfos.map(customerinfo => {
+        return { 
+          customer_id:           customerinfo.customer_id,
+          account_username:      customerinfo.account_username,
+          customer_name:         customerinfo.customer_name,
+          customer_phone_number: customerinfo.customer_phone_number,
+          customer_email:        customerinfo.customer_email,
+          customer_address:      customerinfo.customer_address
+        }
+      });
+      console.log(allCustomerInfos);
+      resolve(allCustomerInfos);
+    })
+    .catch(err => {
+      console.error(err);
+      reject(err);
+    });
+  });
+};
+
+const getByID = (id) => {
   return new Promise((resolve, reject) => {
     CustomerInfo.findOne({
       raw: true,
@@ -30,41 +70,7 @@ const getCustomerInfoById= (id) => {
   });
 };
 
-const getAllCustomerInfos = () => {
-  return new Promise((resolve, reject) => {
-    CustomerInfo.findAll({
-      raw: true,
-      attributes: [
-        'customer_id',
-        'account_username',
-        'customer_name',
-        'customer_phone_number',
-        'customer_email',
-        'customer_address'
-      ]
-    })
-    .then(customerinfos => {
-      const allCustomerInfos = customerinfos.map(customerinfo => {
-        return {
-          customer_id:           customerinfo.customer_id,
-          account_username:      customerinfo.account_username,
-          customer_name:         customerinfo.customer_name,
-          customer_phone_number: customerinfo.customer_phone_number,
-          customer_email:        customerinfo.customer_email,
-          customer_address:      customerinfo.customer_address
-        }
-      });
-      console.log(allCustomerInfos);
-      resolve(allCustomerInfos);
-    })
-    .catch(err => {
-      console.error(err);
-      reject(err);
-    });
-  });
-};
-
-const createCustomerInfo = async (newCustomerInfo) => {
+const createNew = async (newCustomerInfo) => {
   try {
     const customerInfoCreated = await CustomerInfo.create({
       customer_id:           newCustomerInfo.customer_id,
@@ -82,7 +88,7 @@ const createCustomerInfo = async (newCustomerInfo) => {
   }
 };
 
-const updateCustomerInfo = async (id, updatedCustomerInfoData) => {
+const updateByID = async (id, updatedCustomerInfoData) => {
   try {
     const customerInfoUpdated = await CustomerInfo.update(
     {
@@ -103,7 +109,7 @@ const updateCustomerInfo = async (id, updatedCustomerInfoData) => {
   }
 };
 
-const deleteCustomerInfo = async (id) => {
+const deleteByID = async (id) => {
   try {
     const customerInfoDeleted = await CustomerInfo.destroy({
       where: { customer_id: id }
@@ -117,9 +123,9 @@ const deleteCustomerInfo = async (id) => {
 };
 
 module.exports = {
-  getCustomerInfoById,
-  getAllCustomerInfos,
-  createCustomerInfo,
-  updateCustomerInfo,
-  deleteCustomerInfo
+  getAll,
+  getByID,
+  createNew,
+  updateByID,
+  deleteByID
 };
