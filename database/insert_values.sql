@@ -76,6 +76,12 @@ INSERT INTO coffee_info VALUES
 )
 ;
 
+INSERT INTO coffee_storage VALUES
+('SuaSuccess', 1000),
+('LegendClasH', 1000),
+('LegendClas12', 1000),
+('VNCPRXOttoman', 1000);
+
 INSERT INTO discount VALUES
 ('1', 'Sales hè', 0.01);
 
