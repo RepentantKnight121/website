@@ -1,4 +1,36 @@
-const CoffeeCategory = require('../../models/coffee_category');
+const CoffeeCategory = require('../models/coffee_category');
+
+const getAll = (query) => {
+  const pageQuery = parseInt(query.page) || 1; // default to page 1 if query.page is not specified or is invalid
+  const limitQuery = query.limit;
+  const offsetQuery = (pageQuery - 1) * limitQuery;
+
+  return new Promise((resolve, reject) => {
+    CoffeeCategory.findAll({
+      raw: true,
+      attributes: [
+        'coffee_category_id',
+        'coffee_category_name'
+      ],
+      limit: limitQuery,
+      offset: offsetQuery
+    })
+    .then(coffeecategories => {
+      const allCoffeeCategories = coffeecategories.map(coffeecategory => {
+        return {
+          coffee_category_id: coffeecategory.coffee_category_id,
+          coffee_category_name: coffeecategory.coffee_category_name
+        }
+      });
+      console.log(allCoffeeCategories);
+      resolve(allCoffeeCategories);
+    })
+    .catch(err => {
+      console.error(err);
+      reject(err);
+    });
+  });
+};
 
 const getCoffeeCategoryById = (id) => {
   return new Promise((resolve, reject) => {
@@ -22,32 +54,6 @@ const getCoffeeCategoryById = (id) => {
     .catch((error) => {
       console.error(`Error finding coffee category with id ${id}: ${error.message}`);
       reject(error);
-    });
-  });
-};
-
-const getAllCoffeeCategories = () => {
-  return new Promise((resolve, reject) => {
-    CoffeeCategory.findAll({
-      raw: true,
-      attributes: [
-        'coffee_category_id',
-        'coffee_category_name'
-      ]
-    })
-    .then(coffeecategories => {
-      const allCoffeeCategories = coffeecategories.map(coffeecategory => {
-        return {
-          coffee_category_id: coffeecategory.coffee_category_id,
-          coffee_category_name: coffeecategory.coffee_category_name
-        }
-      });
-      console.log(allCoffeeCategories);
-      resolve(allCoffeeCategories);
-    })
-    .catch(err => {
-      console.error(err);
-      reject(err);
     });
   });
 };
@@ -97,8 +103,8 @@ const deleteCoffeeCategory = async (id) => {
 };
 
 module.exports = {
+  getAll,
   getCoffeeCategoryById,
-  getAllCoffeeCategories,
   createCoffeeCategory,
   updateCoffeeCategory,
   deleteCoffeeCategory

@@ -1,7 +1,7 @@
 const express = require('express');
 const router = express.Router();
 
-const Discount = require('../../access/admin/discount');
+const Discount = require('../access/discount');
 
 router.get('/', async (req, res) => {
   try {

@@ -1,7 +1,7 @@
 const express = require('express');
 const router = express.Router();
 
-const CustomerInfo = require('../../access/admin/customer_info');
+const CustomerInfo = require('../access/customer_info');
 
 router.get('/', async (req, res) => {
   try {

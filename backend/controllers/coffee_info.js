@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const CoffeeInfo = require("../../access/admin/coffee_info");
+const CoffeeInfo = require('../access/coffee_info');
 
 
 router.get('/', async (req, res) => {

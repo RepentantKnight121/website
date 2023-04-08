@@ -1,16 +1,20 @@
-const { parse } = require("dotenv");
-const CoffeeStorage = require("../../models/coffee_storage");
-const express = require('express');
-const router = express.Router();
+const CoffeeStorage = require("../models/coffee_storage");
+
 // Lấy list info về số lượng cà phê dự trữ trong kho
-const getAllCoffeeStorage = () =>{
+const getAllCoffeeStorage = () => {
+  const pageQuery = parseInt(query.page) || 1; // default to page 1 if query.page is not specified or is invalid
+  const limitQuery = query.limit;
+  const offsetQuery = (pageQuery - 1) * limitQuery;
+
   return new Promise((resolve, reject) => {
     CoffeeStorage.findAll({ 
       raw: true,
       attributes: [
         'coffee_id',
         'coffee_amount'
-      ]
+      ],
+      limit: limitQuery,
+      offset: offsetQuery
     })
     .then(coffees => {
       const allCoffees = coffees.map(coffee => {

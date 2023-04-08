@@ -1,9 +1,9 @@
-const CoffeeInfo = require("../../models/coffee_info");
+const CoffeeInfo = require("../models/coffee_info");
 
 const getAll = (query) => {
-  const page = parseInt(query.page) || 1; // default to page 1 if query.page is not specified or is invalid
-  const limit = 8;
-  const offset = (page - 1) * limit;
+  const pageQuery = parseInt(query.page) || 1; // default to page 1 if query.page is not specified or is invalid
+  const limitQuery = query.limit;
+  const offsetQuery = (pageQuery - 1) * limitQuery;
   
   return new Promise((resolve, reject) => {
     CoffeeInfo.findAll({ 
@@ -16,10 +16,19 @@ const getAll = (query) => {
         'coffee_price',
         'coffee_detail'
       ],
+      limit: limitQuery,
+      offset: offsetQuery
     })
     .then(coffees => {
       const allCoffees = coffees.map(({ coffee_id, coffee_category_id, coffee_name, coffee_image, coffee_price, coffee_detail }) => {
-        return { coffee_id, coffee_category_id, coffee_name, coffee_image, coffee_price, coffee_detail }
+        return {
+          coffee_id,
+          coffee_category_id,
+          coffee_name,
+          coffee_image,
+          coffee_price,
+          coffee_detail
+        }
       });
       console.log(allCoffees);
       resolve(allCoffees);

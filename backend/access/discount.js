@@ -1,4 +1,38 @@
-const Discount = require('../../models/discount');
+const Discount = require('../models/discount');
+
+const getAllDiscounts = (query) => {
+  const pageQuery = parseInt(query.page) || 1; // default to page 1 if query.page is not specified or is invalid
+  const limitQuery = query.limit;
+  const offsetQuery = (pageQuery - 1) * limitQuery;
+
+  return new Promise((resolve, reject) => {
+    Discount.findAll({
+      raw: true,
+      attributes: [
+        'discount_id',
+        'discount_event_name',
+        'discount_percent'
+      ],
+      limit: limitQuery,
+      offset: offsetQuery,
+    })
+    .then(discounts => {
+      const allDiscounts = discounts.map(discount => {
+        return {
+          discount_id:         discount.discount_id,
+          discount_event_name: discount.discount_event_name,
+          discount_percent:    discount.discount_percent
+        }
+      });
+      console.log(allDiscounts);
+      resolve(allDiscounts);
+    })
+    .catch(err => {
+      console.error(err);
+      reject(err);
+    });
+  });
+};
 
 const getDiscountById= (id) => {
   return new Promise((resolve, reject) => {
@@ -23,34 +57,6 @@ const getDiscountById= (id) => {
     .catch((error) => {
       console.error(`Error finding discount with id ${id}: ${error.message}`);
       reject(error);
-    });
-  });
-};
-
-const getAllDiscounts = () => {
-  return new Promise((resolve, reject) => {
-    Discount.findAll({
-      raw: true,
-      attributes: [
-        'discount_id',
-        'discount_event_name',
-        'discount_percent'
-      ]
-    })
-    .then(discounts => {
-      const allDiscounts = discounts.map(discount => {
-        return {
-          discount_id:         discount.discount_id,
-          discount_event_name: discount.discount_event_name,
-          discount_percent:    discount.discount_percent
-        }
-      });
-      console.log(allDiscounts);
-      resolve(allDiscounts);
-    })
-    .catch(err => {
-      console.error(err);
-      reject(err);
     });
   });
 };

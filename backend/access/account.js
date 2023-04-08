@@ -1,12 +1,12 @@
-const Account = require('../../models/account');
+const Account = require('../models/account');
 
 const getAll = (query) => {
-  const page = parseInt(query.page) || 1; // default to page 1 if query.page is not specified or is invalid
-  const limit = 8;
-  const offset = (page - 1) * limit;
-  
+  const pageQuery = parseInt(query.page) || 1; // default to page 1 if query.page is not specified or is invalid
+  const limitQuery = query.limit;
+  const offsetQuery = (pageQuery - 1) * limitQuery;
+
   return new Promise((resolve, reject) => {
-    CoffeeInfo.findAll({ 
+    Account.findAll({
       raw: true,
       attributes: [
         'account_username',
@@ -15,22 +15,30 @@ const getAll = (query) => {
         'account_email',
         'account_permission'
       ],
+      limit: limitQuery,
+      offset: offsetQuery
     })
-    .then(coffees => {
-      const allAccounts = coffees.map(({ coffee_id, coffee_category_id, coffee_name, coffee_image, coffee_price, coffee_detail }) => {
-        return { coffee_id, coffee_category_id, coffee_name, coffee_image, coffee_price, coffee_detail }
+    .then(accounts => {
+      const allAccounts = accounts.map(account => {
+        return {
+          account_username: account.account_username,
+          account_password: account.account_password,
+          account_displayname: account.account_displayname,
+          account_email:       account.account_email,
+          account_permission:  account.account_permission
+        }
       });
-      console.log(allCoffees);
-      resolve(allCoffees);
+      console.log(allAccounts);
+      resolve(allAccounts);
     })
-    .catch(error => {
-      console.error(error.message);
-      reject(error);
+    .catch(err => {
+      console.error(err);
+      reject(err);
     });
   });
 };
 
-const getAccountByUsername = (username) => {
+const getByUsername = (username) => {
   return new Promise((resolve, reject) => {
     Account.findOne({
       raw: true,
@@ -59,39 +67,7 @@ const getAccountByUsername = (username) => {
   });
 };
 
-const getAllAccounts = () => {
-  return new Promise((resolve, reject) => {
-    Account.findAll({
-      raw: true,
-      attributes: [
-        'account_username',
-        'account_password',
-        'account_displayname',
-        'account_email',
-        'account_permission'
-      ]
-    })
-    .then(accounts => {
-      const allAccounts = accounts.map(account => {
-        return {
-          account_username: account.account_username,
-          account_password: account.account_password,
-          account_displayname: account.account_displayname,
-          account_email: account.account_email,
-          account_permission: account.account_permission
-        }
-      });
-      console.log(allAccounts);
-      resolve(allAccounts);
-    })
-    .catch(err => {
-      console.error(err);
-      reject(err);
-    });
-  });
-};
-
-const createAccount = async (newAccount) => {
+const createNew = async (newAccount) => {
   try {
     const accountCreated = await Account.create({
       account_username: newAccount.account_username,
@@ -108,7 +84,7 @@ const createAccount = async (newAccount) => {
   }
 };
 
-const updateAccount = async (username, updatedAccountData) => {
+const updateByUsername = async (username, updatedAccountData) => {
   try {
     const accountUpdated = await Account.update(
     {
@@ -128,7 +104,7 @@ const updateAccount = async (username, updatedAccountData) => {
   }
 };
 
-const deleteAccount = async (username) => {
+const deleteByUsername = async (username) => {
   try {
     const accountDeleted = await Account.destroy({
       where: { account_username: username }
@@ -142,9 +118,9 @@ const deleteAccount = async (username) => {
 };
 
 module.exports = {
-  getAccountByUsername,
-  getAllAccounts,
-  createAccount,
-  updateAccount,
-  deleteAccount
+  getByUsername,
+  getAll,
+  createNew,
+  updateByUsername,
+  deleteByUsername
 };

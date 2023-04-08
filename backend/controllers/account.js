@@ -1,11 +1,12 @@
 const express = require('express');
 const router = express.Router();
 
-const Account = require('../../access/admin/account');
+const Account = require('../access/account');
 
 router.get('/', async (req, res) => {
   try {
-    const allAccounts = await Account.getAllAccounts();
+    const query = req.query;
+    const allAccounts = await Account.getAll(query);
     res.status(200).json(allAccounts);
   } catch (err) {
     console.error(err);
@@ -18,7 +19,7 @@ router
   .get(async (req, res) => {
     const { username } = req.params;
     try {
-      const account = await Account.getAccountByUsername(username);
+      const account = await Account.getByUsername(username);
       if (account) {
         res.status(200).json(account);
       } else {
@@ -45,18 +46,18 @@ router
     }
   })
   .delete(async (req, res) => {
-  const username = req.params.username;
-  try {
-    const accountDeleted = await Account.deleteAccount(username);
-    if (!accountDeleted) {
-      res.status(404).json({ error: 'Account not found' });
-    } else {
-      res.status(200).json({ message: `Account ${username} has been deleted` });
+    const username = req.params.username;
+    try {
+      const accountDeleted = await Account.deleteAccount(username);
+      if (!accountDeleted) {
+        res.status(404).json({ error: 'Account not found' });
+      } else {
+        res.status(200).json({ message: `Account ${username} has been deleted` });
+      }
+    } catch (err) {
+      console.error(err);
+      res.status(500).json({ error: 'Internal Server Error' });
     }
-  } catch (err) {
-    console.error(err);
-    res.status(500).json({ error: 'Internal Server Error' });
-  }
 });
 
 router.post('/', async (req, res) => {
