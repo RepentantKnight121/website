@@ -8,7 +8,7 @@ function Home() {
 
   const getListCoffeeCategory = async () => {
     try {
-      const data = await fetch('http://localhost:5678/api/coffee-category/', {
+      const data = await fetch('http://localhost:5678/api/coffee-category/?page=1&limit=8', {
         method: "GET"
       });
       const jsonData = await data.json();
@@ -21,7 +21,7 @@ function Home() {
 
   const getListCoffeeInfo = async () => {
     try {
-      const data = await fetch('http://localhost:5678/api/coffee-info', {
+      const data = await fetch('http://localhost:5678/api/coffee-info/?page=1&limit=8', {
         method: "GET"
       });
       const jsonData = await data.json();
