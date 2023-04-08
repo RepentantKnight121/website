@@ -38,7 +38,7 @@ const getAll = (query) => {
   });
 };
 
-const getById= (id) => {
+const getByID = (id) => {
   return new Promise((resolve, reject) => {
     BillInfo.findOne({
       raw: true,
@@ -84,7 +84,7 @@ const createNew = async (billinfo) => {
   }
 };
 
-const updateById = async (id, billinfo) => {
+const updateByID = async (id, billinfo) => {
   try {
     const billInfoUpdated = await BillInfo.update(
     {
@@ -104,7 +104,7 @@ const updateById = async (id, billinfo) => {
   }
 };
 
-const deleteById = async (id) => {
+const deleteByID = async (id) => {
   try {
     const billInfoDeleted = await BillInfo.destroy({
       where: { bill_id: id }
@@ -118,9 +118,9 @@ const deleteById = async (id) => {
 };
 
 module.exports = {
-  getById,
+  getByID,
   getAll,
   createNew,
-  updateById,
-  deleteById
+  updateByID,
+  deleteByID
 };

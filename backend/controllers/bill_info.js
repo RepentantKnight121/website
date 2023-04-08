@@ -5,7 +5,8 @@ const BillInfo = require('../access/bill_info');
 
 router.get('/', async (req, res) => {
   try {
-    const allBillsInfo = await BillInfo.getAll();
+    const query = req.query;
+    const allBillsInfo = await BillInfo.getAll(query);
     res.status(200).json(allBillsInfo);
   } catch (err) {
     console.error(err);
@@ -20,7 +21,7 @@ router
     console.log(id)
     try {
       console.log('Hello')
-      const billinfo = await BillInfo.getById(id);
+      const billinfo = await BillInfo.getByID(id);
       if (billinfo) {
         res.status(200).json(billinfo);
       } else {
@@ -35,7 +36,7 @@ router
     const id = req.params.id;
     const updatedBillInfo = req.body;
     try {
-      const billInfoUpdated = await BillInfo.updateById(id, updatedBillInfo);
+      const billInfoUpdated = await BillInfo.updateByID(id, updatedBillInfo);
       if (!billInfoUpdated) {
         res.status(404).json({ error: 'Bill info not found' });
       } else {
@@ -49,7 +50,7 @@ router
   .delete(async (req, res) => {
     const id = req.params.id;
     try {
-      const billInfoDeleted = await BillInfo.deleteById(id) ;
+      const billInfoDeleted = await BillInfo.deleteByID(id) ;
       if (!billInfoDeleted) {
         res.status(404).json({ error: 'Bill info not found' });
       } else {

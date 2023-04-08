@@ -5,7 +5,8 @@ const BillDetail = require("../access/bill_detail");
 
 router.get('/', async (req, res) => {
   try {
-    const getAllBillDetail = await BillDetail.getAll();
+    const query = req.query;
+    const getAllBillDetail = await BillDetail.getAll(query);
     res.status(200).json(getAllBillDetail);
   } catch (err) {
     res.status(400);

@@ -1,7 +1,7 @@
 const CoffeeStorage = require("../models/coffee_storage");
 
 // Lấy list info về số lượng cà phê dự trữ trong kho
-const getAllCoffeeStorage = () => {
+const getAll = (query) => {
   const pageQuery = parseInt(query.page) || 1; // default to page 1 if query.page is not specified or is invalid
   const limitQuery = query.limit;
   const offsetQuery = (pageQuery - 1) * limitQuery;
@@ -34,7 +34,7 @@ const getAllCoffeeStorage = () => {
 }
 
 // Lấy thông tin về cafe và số lượng dự trữ của nó bởi ID
-const getCoffeeStorageByID = (idCoffee) => {
+const getByID = (idCoffee) => {
   return new Promise((resolve, reject) => {
     CoffeeStorage.findOne({ 
       raw: true,
@@ -62,7 +62,7 @@ const getCoffeeStorageByID = (idCoffee) => {
 
 
 // Tạo thông tin về cafe và số lượng dự trữ của nó 
-const createCoffeeStorage = async (newCoffeeStorage) => {
+const createNew = async (newCoffeeStorage) => {
   try {
     const id = newCoffeeStorage.coffee_id ;
     const amount = newCoffeeStorage.coffee_amount ;
@@ -78,7 +78,7 @@ const createCoffeeStorage = async (newCoffeeStorage) => {
   }
 };
 
-const deleteCoffeeStorage = async (idCoffee) => {
+const deleteByID = async (idCoffee) => {
   try {
     const CoffeeStorageDeleted = await CoffeeStorage.destroy({
       where: { coffee_id: idCoffee }
@@ -91,7 +91,7 @@ const deleteCoffeeStorage = async (idCoffee) => {
   }
 };
 
-const updateCoffeeStorage = async (idCoffee , UpdateCoffee_amount) => {
+const updateByID = async (idCoffee , UpdateCoffee_amount) => {
   try {
     const CoffeeStorageUpdated = await CoffeeStorage.update(
     {
@@ -109,9 +109,9 @@ const updateCoffeeStorage = async (idCoffee , UpdateCoffee_amount) => {
 };
 
 module.exports = {
-  getAllCoffeeStorage,
-  getCoffeeStorageByID,
-  createCoffeeStorage,
-  deleteCoffeeStorage,
-  updateCoffeeStorage
+  getAll,
+  getByID,
+  createNew,
+  deleteByID,
+  updateByID
 };

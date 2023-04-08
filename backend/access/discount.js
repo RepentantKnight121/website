@@ -1,6 +1,6 @@
 const Discount = require('../models/discount');
 
-const getAllDiscounts = (query) => {
+const getAll = (query) => {
   const pageQuery = parseInt(query.page) || 1; // default to page 1 if query.page is not specified or is invalid
   const limitQuery = query.limit;
   const offsetQuery = (pageQuery - 1) * limitQuery;
@@ -34,7 +34,7 @@ const getAllDiscounts = (query) => {
   });
 };
 
-const getDiscountById= (id) => {
+const getByID = (id) => {
   return new Promise((resolve, reject) => {
     Discount.findOne({
       raw: true,
@@ -61,7 +61,7 @@ const getDiscountById= (id) => {
   });
 };
 
-const createDiscount = async (newDiscount) => {
+const createNew = async (newDiscount) => {
   try {
     const discountCreated = await Discount.create({
       discount_id:         newDiscount.discount_id,
@@ -76,7 +76,7 @@ const createDiscount = async (newDiscount) => {
   }
 };
 
-const updateDiscount = async (id, updatedDiscountData) => {
+const updateByID = async (id, updatedDiscountData) => {
   try {
     const discountUpdated = await Discount.update(
     {
@@ -94,7 +94,7 @@ const updateDiscount = async (id, updatedDiscountData) => {
   }
 };
 
-const deleteDiscount = async (id) => {
+const deleteByID = async (id) => {
   try {
     const discountDeleted = await Discount.destroy({
       where: { discount_id: id }
@@ -108,9 +108,9 @@ const deleteDiscount = async (id) => {
 };
 
 module.exports = {
-  getDiscountById,
-  getAllDiscounts,
-  createDiscount,
-  updateDiscount,
-  deleteDiscount
+  getAll,
+  getByID,
+  createNew,
+  updateByID,
+  deleteByID
 };
