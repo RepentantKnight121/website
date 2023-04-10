@@ -78,19 +78,6 @@ const createNew = async (newCoffeeStorage) => {
   }
 };
 
-const deleteByID = async (idCoffee) => {
-  try {
-    const CoffeeStorageDeleted = await CoffeeStorage.destroy({
-      where: { coffee_id: idCoffee }
-    });
-    console.log(`Deleted coffee storage with id coffee ${idCoffee}`);
-    return CoffeeStorageDeleted;
-  } catch (error) {
-    console.error(`Error deleting coffee storage with id coffee ${idCoffee}: ${error.message}`);
-    return false;
-  }
-};
-
 const updateByID = async (idCoffee , UpdateCoffee_amount) => {
   try {
     const CoffeeStorageUpdated = await CoffeeStorage.update(
@@ -108,10 +95,24 @@ const updateByID = async (idCoffee , UpdateCoffee_amount) => {
   }
 };
 
+
+const deleteByID = async (idCoffee) => {
+  try {
+    const CoffeeStorageDeleted = await CoffeeStorage.destroy({
+      where: { coffee_id: idCoffee }
+    });
+    console.log(`Deleted coffee storage with id coffee ${idCoffee}`);
+    return CoffeeStorageDeleted;
+  } catch (error) {
+    console.error(`Error deleting coffee storage with id coffee ${idCoffee}: ${error.message}`);
+    return false;
+  }
+};
+
 module.exports = {
   getAll,
   getByID,
   createNew,
-  deleteByID,
-  updateByID
+  updateByID,
+  deleteByID
 };

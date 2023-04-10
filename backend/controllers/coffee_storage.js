@@ -25,7 +25,7 @@ router
   .put(async (req, res) => {
     try {
       const idCoffeeStorage = req.params.id;  
-      await CoffeeStorage.updateCoffeeStorage(idCoffeeStorage, req.params.coffee_amount);
+      await CoffeeStorage.updateByID(idCoffeeStorage, req.params.coffee_amount);
       //const getCoffeeStorageByID = await getCoffeeStorageByID(idCoffeeStorage);
       //res.status(200).json(getCoffeeStorageByID);
       res.send("Updated successfully");

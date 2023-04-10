@@ -118,8 +118,8 @@ const deleteByID = async (id) => {
 };
 
 module.exports = {
-  getByID,
   getAll,
+  getByID,
   createNew,
   updateByID,
   deleteByID

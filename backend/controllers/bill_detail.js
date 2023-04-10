@@ -24,14 +24,14 @@ router
   }})
   .put(async (req, res) => {
     try {
-      await BillDetail.update( req.params.id , req.body);
+      await BillDetail.updateByID( req.params.id , req.body);
       res.send('Updated successfully');
     } catch (err) {
       res.status(500).json({ error: 'Internal Server Error' });
   }})
   .delete(async (req, res) => {
     try {      
-      await  BillDetail.remove(req.params.id);
+      await  BillDetail.deleteByID(req.params.id);
       res.status(200).send('Delete successfully');
     } catch (err) {
       res.status(500).json({ error: 'Internal Server Error' });
@@ -39,7 +39,7 @@ router
 
 router.post('/', async (req, res) => {
   try {
-    await BillDetail.create(req.body);
+    await BillDetail.createNew(req.body);
     res.status(200).send('Create successfully');;
   } catch (err) {
     res.status(400);

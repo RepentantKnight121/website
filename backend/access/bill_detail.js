@@ -64,7 +64,7 @@ const getByID= (idBill) => {
   });
 };
 
-const create = async ( newBillDetail) => {
+const createNew = async ( newBillDetail) => {
   try {
     console.log(newBillDetail);
     const BiletailDlCreated = await BillDetail.create({
@@ -81,20 +81,7 @@ const create = async ( newBillDetail) => {
   }
 };
 
-const remove = async (idDetail) => {
-  try {
-    const BillDetailDeleted = await BillDetail.destroy({
-      where: { bill_detail_id: idDetail }
-    });
-    console.log(`Deleted bill detail with id  ${idDetail}`);
-    return BillDetailDeleted;
-  } catch (error) {
-    console.error(`Error deleting bill detail with id ${idDetail}: ${error.message}`);
-    return false;
-  }
-};
-
-const update = async (idDetail, dataUpdate) => {
+const updateByID = async (idDetail, dataUpdate) => {
   try {
     const BillDetailUpdated = await BillDetail.update(
     {
@@ -113,10 +100,23 @@ const update = async (idDetail, dataUpdate) => {
   }
 };
 
+const deleteByID = async (idDetail) => {
+  try {
+    const BillDetailDeleted = await BillDetail.destroy({
+      where: { bill_detail_id: idDetail }
+    });
+    console.log(`Deleted bill detail with id  ${idDetail}`);
+    return BillDetailDeleted;
+  } catch (error) {
+    console.error(`Error deleting bill detail with id ${idDetail}: ${error.message}`);
+    return false;
+  }
+};
+
 module.exports = {
     getAll,
     getByID,
-    update,
-    remove,
-    create
+    createNew,
+    updateByID,
+    deleteByID
 };
