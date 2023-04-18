@@ -117,10 +117,24 @@ const deleteByUsername = async (username) => {
   }
 };
 
+const checkLogin = async (username , password) => {
+  try {
+
+    const Login = await Account.findOne({ where: { account_username : username , account_password : password } })
+    if(!Login) return `No found account with username ${username}`
+    console.log(`Login success with username ${username}`);
+    return Login;
+  } catch (error) {
+    console.error(`Error login account with username ${username}: ${error.message}`);
+    return false;
+  }
+}
+
 module.exports = {
   getByUsername,
   getAll,
   createNew,
   updateByUsername,
-  deleteByUsername
+  deleteByUsername,
+  checkLogin
 };
