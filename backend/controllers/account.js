@@ -2,6 +2,8 @@ const express = require('express');
 const router = express.Router();
 
 const Account = require('../access/account');
+const auth = require("../access/auth");
+
 
 router.get('/', async (req, res) => {
   try {
@@ -12,6 +14,10 @@ router.get('/', async (req, res) => {
     res.status(500).json({ error: 'Internal Server Error' });
   }
 });
+
+router
+    .route('/login')
+    .post(auth.login);
 
 router
   .route('/:username')
