@@ -9,7 +9,7 @@ CREATE TABLE coffee_category (
 );
 
 CREATE TABLE coffee_info (
-    coffee_id             VARCHAR(20) NOT NULL, 
+    coffee_id             VARCHAR(20) NOT NULL,
     coffee_category_id    VARCHAR(50) NOT NULL,
     coffee_name           VARCHAR(50),
     coffee_image          BYTEA,

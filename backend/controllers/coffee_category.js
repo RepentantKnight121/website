@@ -5,7 +5,8 @@ const CoffeeCategory = require('../access/coffee_category');
 
 router.get('/', async (req, res) => {
   try {
-    const allCoffeeCategories = await CoffeeCategory.getAllCoffeeCategories();
+    const query = req.query;
+    const allCoffeeCategories = await CoffeeCategory.getAll(query);
     res.status(200).json(allCoffeeCategories);
   } catch (err) {
     console.error(err);

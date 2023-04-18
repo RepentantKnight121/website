@@ -1,16 +1,20 @@
-const { parse } = require("dotenv");
 const CoffeeStorage = require("../models/coffee_storage");
-const express = require('express');
-const router = express.Router();
+
 // Lấy list info về số lượng cà phê dự trữ trong kho
-const getAllCoffeeStorage = () =>{
+const getAll = (query) => {
+  const pageQuery = parseInt(query.page) || 1; // default to page 1 if query.page is not specified or is invalid
+  const limitQuery = query.limit;
+  const offsetQuery = (pageQuery - 1) * limitQuery;
+
   return new Promise((resolve, reject) => {
     CoffeeStorage.findAll({ 
       raw: true,
       attributes: [
         'coffee_id',
         'coffee_amount'
-      ]
+      ],
+      limit: limitQuery,
+      offset: offsetQuery
     })
     .then(coffees => {
       const allCoffees = coffees.map(coffee => {
@@ -30,7 +34,7 @@ const getAllCoffeeStorage = () =>{
 }
 
 // Lấy thông tin về cafe và số lượng dự trữ của nó bởi ID
-const getCoffeeStorageByID = (idCoffee) => {
+const getByID = (idCoffee) => {
   return new Promise((resolve, reject) => {
     CoffeeStorage.findOne({ 
       raw: true,
@@ -58,7 +62,7 @@ const getCoffeeStorageByID = (idCoffee) => {
 
 
 // Tạo thông tin về cafe và số lượng dự trữ của nó 
-const createCoffeeStorage = async (newCoffeeStorage) => {
+const createNew = async (newCoffeeStorage) => {
   try {
     const id = newCoffeeStorage.coffee_id ;
     const amount = newCoffeeStorage.coffee_amount ;
@@ -74,20 +78,7 @@ const createCoffeeStorage = async (newCoffeeStorage) => {
   }
 };
 
-const deleteCoffeeStorage = async (idCoffee) => {
-  try {
-    const CoffeeStorageDeleted = await CoffeeStorage.destroy({
-      where: { coffee_id: idCoffee }
-    });
-    console.log(`Deleted coffee storage with id coffee ${idCoffee}`);
-    return CoffeeStorageDeleted;
-  } catch (error) {
-    console.error(`Error deleting coffee storage with id coffee ${idCoffee}: ${error.message}`);
-    return false;
-  }
-};
-
-const updateCoffeeStorage = async (idCoffee , UpdateCoffee_amount) => {
+const updateByID = async (idCoffee , UpdateCoffee_amount) => {
   try {
     const CoffeeStorageUpdated = await CoffeeStorage.update(
     {
@@ -104,10 +95,24 @@ const updateCoffeeStorage = async (idCoffee , UpdateCoffee_amount) => {
   }
 };
 
+
+const deleteByID = async (idCoffee) => {
+  try {
+    const CoffeeStorageDeleted = await CoffeeStorage.destroy({
+      where: { coffee_id: idCoffee }
+    });
+    console.log(`Deleted coffee storage with id coffee ${idCoffee}`);
+    return CoffeeStorageDeleted;
+  } catch (error) {
+    console.error(`Error deleting coffee storage with id coffee ${idCoffee}: ${error.message}`);
+    return false;
+  }
+};
+
 module.exports = {
-  getAllCoffeeStorage,
-  getCoffeeStorageByID,
-  createCoffeeStorage,
-  deleteCoffeeStorage,
-  updateCoffeeStorage
+  getAll,
+  getByID,
+  createNew,
+  updateByID,
+  deleteByID
 };

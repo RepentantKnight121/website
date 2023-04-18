@@ -5,7 +5,8 @@ const CustomerInfo = require('../access/customer_info');
 
 router.get('/', async (req, res) => {
   try {
-    const allCustomerInfos = await CustomerInfo.getAllCustomerInfos();
+    const query = req.query;
+    const allCustomerInfos = await CustomerInfo.getAll(query);
     res.status(200).json(allCustomerInfos);
   } catch (err) {
     console.error(err);
@@ -20,7 +21,7 @@ router
     console.log(id)
     try {
       console.log('Hello')
-      const customerinfo = await CustomerInfo.getCustomerInfoById(id);
+      const customerinfo = await CustomerInfo.getByID(id);
       if (customerinfo) {
         res.status(200).json(customerinfo);
       } else {
@@ -35,7 +36,7 @@ router
     const id = req.params.id;
     const updatedCustomerInfoData = req.body;
     try {
-      const customerInfoUpdated = await CustomerInfo.updateCustomerInfo(id, updatedCustomerInfoData);
+      const customerInfoUpdated = await CustomerInfo.updateByID(id, updatedCustomerInfoData);
       if (!customerInfoUpdated) {
         res.status(404).json({ error: 'Customer info not found' });
       } else {
@@ -49,7 +50,7 @@ router
   .delete(async (req, res) => {
     const id = req.params.id;
     try {
-      const customerInfoDeleted = await CustomerInfo.deleteCustomerInfo(id) ;
+      const customerInfoDeleted = await CustomerInfo.deleteByID(id) ;
       if (!customerInfoDeleted) {
         res.status(404).json({ error: 'Coffee category not found' });
       } else {
@@ -64,7 +65,7 @@ router
 router.post('/', async (req, res) => {
   const customerInfoData = req.body;
   try {
-    const customerInfoCreated = await CustomerInfo.createCustomerInfo(customerInfoData);
+    const customerInfoCreated = await CustomerInfo.createNew(customerInfoData);
     if (!customerInfoCreated) {
       res.status(500).json({ error: 'Error creating customer info' });
     } else {

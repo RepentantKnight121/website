@@ -1,6 +1,10 @@
 const CoffeeInfo = require("../models/coffee_info");
 
-const getAll = () =>{
+const getAll = (query) => {
+  const pageQuery = parseInt(query.page) || 1; // default to page 1 if query.page is not specified or is invalid
+  const limitQuery = query.limit;
+  const offsetQuery = (pageQuery - 1) * limitQuery;
+
   return new Promise((resolve, reject) => {
     CoffeeInfo.findAll({ 
       raw: true,
@@ -11,28 +15,30 @@ const getAll = () =>{
         'coffee_image',
         'coffee_price',
         'coffee_detail'
-      ]
+      ],
+      limit: limitQuery,
+      offset: offsetQuery
     })
     .then(coffees => {
-        const allCoffees = coffees.map(coffee => {
-          return {
-            coffee_id : coffee.coffee_id ,
-            coffee_category_id : coffee.coffee_category_id ,
-            coffee_name : coffee.coffee_name ,
-            coffee_image: coffee.coffee_image ,
-            coffee_price : coffee.coffee_price ,
-            coffee_detail : coffee.coffee_detail
-          }
-        });
-        console.log(allCoffees);
-        resolve(allCoffees);
-      })
-      .catch(err => {
-        console.error(err);
-        reject(err);
+      const allCoffees = coffees.map(({ coffee_id, coffee_category_id, coffee_name, coffee_image, coffee_price, coffee_detail }) => {
+        return {
+          coffee_id,
+          coffee_category_id,
+          coffee_name,
+          coffee_image,
+          coffee_price,
+          coffee_detail
+        };
       });
+      console.log(allCoffees);
+      resolve(allCoffees);
+    })
+    .catch(error => {
+      console.error(error.message);
+      reject(error);
+    });
   });
-}
+};
 
 const getByID = (idCoffee) => {
   return new Promise((resolve, reject) => {
@@ -59,36 +65,6 @@ const getByID = (idCoffee) => {
     })
     .catch((error) => {
       console.error(`Error finding coffee info found with id coffee ${idCoffee}: ${error.message}`);
-      reject(error);
-    });
-  });
-};
-
-const getSameCategory = async (query) => {
-  return new Promise((resolve, reject) => {
-    CoffeeInfo.findAll({ 
-      raw: true,
-      attributes: [
-        'coffee_id',
-        'coffee_category_id',
-        'coffee_name',
-        'coffee_image',
-        'coffee_price',
-        'coffee_detail'
-      ],
-      where: { coffee_id: query.coffee_category_id }
-    })
-    .then((coffeeinfo) => {
-      if (!coffeeinfo) {
-        console.warn(`No coffee info found with coffee category id ${query.coffee_category_id}`);
-        resolve(null);
-      } else {
-        console.log(`Coffee info found with coffee category id ${query.coffee_category_id}`);
-        resolve(coffeeinfo);
-      }
-    })
-    .catch((error) => {
-      console.error(`Error finding coffee info found with coffee category id ${query.coffee_category_id}: ${error.message}`);
       reject(error);
     });
   });
@@ -152,7 +128,6 @@ const createNew = async ( coffee ) => {
 module.exports = {
   getAll,
   getByID,
-  getSameCategory,
   deleteByID,
   updateByID,
   createNew
