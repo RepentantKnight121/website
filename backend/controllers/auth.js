@@ -1,6 +1,6 @@
 const jwt = require('jsonwebtoken');
 
-const Account = require("../access/account");
+const Account = require("../DAO/account");
 
 const signToken = (id, username) => {
     return jwt.sign(
