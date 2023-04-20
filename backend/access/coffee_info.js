@@ -1,42 +1,96 @@
+const CoffeeCategory = require('../models/coffee_category');
 const CoffeeInfo = require("../models/coffee_info");
 
+const img = require('../utils/image_encoding');
+
 const getAll = (query) => {
-  const pageQuery = parseInt(query.page) || 1; // default to page 1 if query.page is not specified or is invalid
-  const limitQuery = query.limit;
+  const pageQuery = parseInt(query.page) || 1;
+  const limitQuery = parseInt(query.limit) || 10;
   const offsetQuery = (pageQuery - 1) * limitQuery;
+  // const search = query.search || "";
+  let category = query.category || "All";
 
   return new Promise((resolve, reject) => {
-    CoffeeInfo.findAll({ 
-      raw: true,
-      attributes: [
-        'coffee_id',
-        'coffee_category_id',
-        'coffee_name',
-        'coffee_image',
-        'coffee_price',
-        'coffee_detail'
-      ],
-      limit: limitQuery,
-      offset: offsetQuery
-    })
-    .then(coffees => {
-      const allCoffees = coffees.map(({ coffee_id, coffee_category_id, coffee_name, coffee_image, coffee_price, coffee_detail }) => {
-        return {
-          coffee_id,
-          coffee_category_id,
-          coffee_name,
-          coffee_image,
-          coffee_price,
-          coffee_detail
-        };
+    let coffeeFilter = {};
+    if (category !== "All") {
+      CoffeeCategory.findOne({
+        where: {
+          coffee_category_id: category
+        },
+        attributes: ['coffee_category_id'],
+        raw: true
+      })
+      .then(result => {
+        coffeeFilter.coffee_category_id = result.coffee_category_id;
+
+        CoffeeInfo.findAll({ 
+          where: coffeeFilter,
+          attributes: [
+            'coffee_id',
+            'coffee_category_id',
+            'coffee_name',
+            'coffee_image',
+            'coffee_price',
+            'coffee_detail'
+          ],
+          limit: limitQuery,
+          offset: offsetQuery,
+          raw: true
+        })
+        .then(coffees => {
+          const allCoffees = coffees.map(({ coffee_id, coffee_category_id, coffee_name, coffee_image, coffee_price, coffee_detail }) => {
+            return {
+              coffee_id:          coffee_id,
+              coffee_category_id: coffee_category_id,
+              coffee_name:        coffee_name,
+              coffee_image:       img.imageConvert(coffee_image),
+              coffee_price:       coffee_price,
+              coffee_detail:      coffee_detail
+            };
+          });
+          resolve(allCoffees);
+        })
+        .catch(error => {
+          console.error(error.message);
+          reject(error);
+        });
+      })
+      .catch(error => {
+        console.error(error.message);
+        reject(error);
       });
-      console.log(allCoffees);
-      resolve(allCoffees);
-    })
-    .catch(error => {
-      console.error(error.message);
-      reject(error);
-    });
+    } else {
+      CoffeeInfo.findAll({ 
+        attributes: [
+          'coffee_id',
+          'coffee_category_id',
+          'coffee_name',
+          'coffee_image',
+          'coffee_price',
+          'coffee_detail'
+        ],
+        limit: limitQuery,
+        offset: offsetQuery,
+        raw: true
+      })
+      .then(coffees => {
+        const allCoffees = coffees.map(({ coffee_id, coffee_category_id, coffee_name, coffee_image, coffee_price, coffee_detail }) => {
+          return {
+            coffee_id:          coffee_id,
+            coffee_category_id: coffee_category_id,
+            coffee_name:        coffee_name,
+            coffee_image:       img.imageConvert(coffee_image),
+            coffee_price:       coffee_price,
+            coffee_detail:      coffee_detail
+          };
+        });
+        resolve(allCoffees);
+      })
+      .catch(error => {
+        console.error(error.message);
+        reject(error);
+      });
+    }
   });
 };
 
@@ -54,13 +108,15 @@ const getByID = (idCoffee) => {
       ],
       where: { coffee_id: idCoffee }
     })
-    .then((Coffee) => {
-      if (!Coffee) {
+    .then((coffee) => {
+      if (!coffee) {
         console.warn(`No coffee info found with id coffee ${idCoffee}`);
         resolve(null);
       } else {
         console.log(`Coffee info found with id coffee ${idCoffee}`);
-        resolve(Coffee);
+        const coffeeImage = imageConvert(coffee.coffee_image); // convert coffee_image to base64-encoded data
+        const coffeeInfo = { ...coffee, coffee_image: coffeeImage }; // create a new object with the converted coffee_image
+        resolve(coffeeInfo);
       }
     })
     .catch((error) => {
@@ -89,11 +145,11 @@ const updateByID = async ( idCoffee , coffee ) => {
     console.log(coffee);
     const CoffeeInfoUpdated = await CoffeeInfo.update(
     {
-      coffee_category_id : coffee.coffee_category_id,
-      coffee_name : coffee.coffee_name,
-      coffee_image : coffee.coffee_image ,
-      coffee_price : coffee.coffee_price,
-      coffee_detail : coffee.coffee_detail
+      coffee_category_id: coffee.coffee_category_id,
+      coffee_name: coffee.coffee_name,
+      coffee_image: coffee.coffee_image,
+      coffee_price: coffee.coffee_price,
+      coffee_detail: coffee.coffee_detail
     },
     {
       where: { coffee_id: idCoffee }

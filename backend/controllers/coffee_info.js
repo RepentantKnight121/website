@@ -2,7 +2,6 @@ const express = require('express');
 const router = express.Router();
 const CoffeeInfo = require('../access/coffee_info');
 
-
 router.get('/', async (req, res) => {
   try {
     const query = req.query;
@@ -36,6 +35,14 @@ router
     } catch (err) {
       res.status(400);
   }})
+
+router.get('/category/:category', async (req, res) => {
+  try {
+    const getCoffeeInfoByCategory = await CoffeeInfo.getByCategory(req.params.category, req.query);
+    res.status(200).json(getCoffeeInfoByCategory);
+  } catch (err) {
+    res.status(400);
+}});
 
 router.post('/', async (req, res) => {
   const newCoffeeInfo = req.body;

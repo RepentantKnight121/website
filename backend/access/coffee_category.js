@@ -22,7 +22,6 @@ const getAll = (query) => {
           coffee_category_name: coffeecategory.coffee_category_name
         }
       });
-      console.log(allCoffeeCategories);
       resolve(allCoffeeCategories);
     })
     .catch(err => {

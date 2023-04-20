@@ -1,5 +1,6 @@
-const { DataTypes } = require('sequelize');
+const { Model, DataTypes } = require('sequelize');
 const sequelize = require('../database/db_config');
+const CoffeeCategory = require('./coffee_category');
 
 const CoffeeInfo = sequelize.define('coffee_info', {
   coffee_id: {
@@ -10,29 +11,31 @@ const CoffeeInfo = sequelize.define('coffee_info', {
   coffee_category_id: {
     type: DataTypes.STRING(50),
     references: {
-      model: 'coffee_category', // Tên bảng chứa khóa chính
-      key: 'coffee_category_id' // Tên cột khóa chính tham chiếu
-    }
+      model: 'coffee_category',
+      key: 'coffee_category_id',
+    },
   },
   coffee_name: {
     type: DataTypes.STRING(50),
-    allowNull: false
+    allowNull: false,
   },
   coffee_image: {
     type: DataTypes.BLOB('long'),
-    allowNull: true
+    allowNull: true,
   },
   coffee_price: {
     type: DataTypes.BIGINT,
-    allowNull: false
+    allowNull: false,
   },
   coffee_detail: {
     type: DataTypes.STRING(700),
-    allowNull: false  
+    allowNull: false,
   },
-  }, {
-    tableName: 'coffee_info',
-    timestamps: false // Bỏ qua thuộc tính `created_at` và `updated_at` tự động của Sequelize
+}, {
+  tableName: 'coffee_info',
+  timestamps: false,
 });
-                                          
+
+CoffeeInfo.belongsTo(CoffeeCategory, { foreignKey: 'coffee_category_id', as: 'coffee_category' });
+
 module.exports = CoffeeInfo;

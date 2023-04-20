@@ -117,7 +117,7 @@ const deleteByUsername = async (username) => {
   }
 };
 
-const checkLogin = async (username , password) => {
+const checkLogin = async (username , password) => {n
   try {
 
     const Login = await Account.findOne({ where: { account_username : username , account_password : password } })
