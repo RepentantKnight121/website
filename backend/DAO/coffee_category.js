@@ -4,6 +4,7 @@ const getAll = (query) => {
   const pageQuery = parseInt(query.page) || 1; // default to page 1 if query.page is not specified or is invalid
   const limitQuery = query.limit;
   const offsetQuery = (pageQuery - 1) * limitQuery;
+  const search = decodeURI(query.search) || "";
 
   return new Promise((resolve, reject) => {
     CoffeeCategory.findAll({

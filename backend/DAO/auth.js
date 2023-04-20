@@ -4,7 +4,7 @@ const Account = require("../access/account");
 
 const signToken = (id, username) => {
     return jwt.sign(
-{
+        {
             id: id,
             username: username
         },

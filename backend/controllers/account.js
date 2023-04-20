@@ -1,8 +1,8 @@
 const express = require('express');
 const router = express.Router();
 
-const Account = require('../access/account');
-const auth = require("../access/auth");
+const Account = require('../DAO/account');
+const auth = require("../DAO/auth");
 
 
 router.get('/', async (req, res) => {

@@ -1,5 +1,7 @@
-const { Model, DataTypes } = require('sequelize');
-const sequelize = require('../database/db_config');
+const { DataTypes } = require('sequelize');
+
+const sequelize = require('../postgresql/db_config');
+
 const CoffeeCategory = require('./coffee_category');
 
 const CoffeeInfo = sequelize.define('coffee_info', {

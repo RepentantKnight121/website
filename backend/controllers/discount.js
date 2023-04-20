@@ -1,7 +1,7 @@
 const express = require('express');
 const router = express.Router();
 
-const Discount = require('../access/discount');
+const Discount = require('../DAO/discount');
 
 router.get('/', async (req, res) => {
   try {

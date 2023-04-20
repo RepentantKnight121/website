@@ -1,3 +1,5 @@
+const { Op } = require('sequelize');
+
 const CoffeeCategory = require('../models/coffee_category');
 const CoffeeInfo = require("../models/coffee_info");
 
@@ -7,7 +9,7 @@ const getAll = (query) => {
   const pageQuery = parseInt(query.page) || 1;
   const limitQuery = parseInt(query.limit) || 10;
   const offsetQuery = (pageQuery - 1) * limitQuery;
-  // const search = query.search || "";
+  const search = decodeURI(query.search) || "";
   let category = query.category || "All";
 
   return new Promise((resolve, reject) => {
@@ -59,7 +61,7 @@ const getAll = (query) => {
         console.error(error.message);
         reject(error);
       });
-    } else {
+    } else if (category === 'All') {
       CoffeeInfo.findAll({ 
         attributes: [
           'coffee_id',
@@ -90,6 +92,50 @@ const getAll = (query) => {
         console.error(error.message);
         reject(error);
       });
+    } else {
+      coffeeFilter.coffee_name = {
+        [Op.like]: `%${search}%`,
+      };
+      CoffeeInfo.findAll({
+          where: coffeeFilter,
+          attributes: [
+            "coffee_id",
+            "coffee_category_id",
+            "coffee_name",
+            "coffee_image",
+            "coffee_price",
+            "coffee_detail",
+          ],
+          limit: limitQuery,
+          offset: offsetQuery,
+          raw: true,
+        })
+          .then((coffees) => {
+            const allCoffees = coffees.map(
+              ({
+                coffee_id,
+                coffee_category_id,
+                coffee_name,
+                coffee_image,
+                coffee_price,
+                coffee_detail,
+              }) => {
+                return {
+                  coffee_id: coffee_id,
+                  coffee_category_id: coffee_category_id,
+                  coffee_name: coffee_name,
+                  coffee_image: img.imageConvert(coffee_image),
+                  coffee_price: coffee_price,
+                  coffee_detail: coffee_detail,
+                };
+              }
+            );
+            resolve(allCoffees)
+          })
+          .catch((error) => {
+            console.error(error.message);
+            reject(error);
+          });
     }
   });
 };

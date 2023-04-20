@@ -1,7 +1,7 @@
 const express = require('express');
 const router = express.Router();
 
-const BillDetail = require("../access/bill_detail");
+const BillDetail = require("../DAO/bill_detail");
 
 router.get('/', async (req, res) => {
   try {
