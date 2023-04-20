@@ -1,6 +1,8 @@
+import AdminOption from '../components/AdminOption';
+
 function Admin() {
   return (
-    <div>Admin</div>
+    <AdminOption />
   )
 }
 export default Admin;

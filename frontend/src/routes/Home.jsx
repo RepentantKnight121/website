@@ -3,7 +3,7 @@ import { v4 as uuidv4 } from 'uuid';
 
 function Home() {
   const [ listCoffeeCategory, setListCoffeeCategory ] = useState([]);
-  const [ listCoffeeInfo, setListCoffeeInfo ] = useState([])
+  const [ listCoffeeInfo, setListCoffeeInfo ] = useState([]);
   const [ selectedOption, setSelectedOption] = useState('');
 
   const getListCoffeeCategory = async () => {
@@ -21,7 +21,7 @@ function Home() {
 
   const getListCoffeeInfo = async () => {
     try {
-      const data = await fetch('http://localhost:5678/api/coffee-info/?page=1&limit=8', {
+      const data = await fetch(`http://localhost:5678/api/coffee-info/category/?page=1&limit=8&category=${selectedOption}`, {
         method: "GET"
       });
       const jsonData = await data.json();
@@ -43,9 +43,7 @@ function Home() {
     getListCoffeeInfo();
   }, [selectedOption])
 
-  console.log(listCoffeeInfo);
-
-  console.log(selectedOption)
+  console.log(listCoffeeInfo); // null
 
   const ListCoffeeCategoryOption = ({ listCoffeeCategory }) => {
     return (listCoffeeCategory.map((coffeeCategory) => (
@@ -54,8 +52,15 @@ function Home() {
     )))
   }
 
-  const ListCoffeeInfo = () => {
-
+  const ListCoffeeInfo = (listCoffeeInfo) => {
+    return (listCoffeeInfo.map(coffeeInfo => (
+      <div key={uuidv4()} className='flex flex-col'>
+        <span className="p-4 border-2 border-amber-900">
+          <img className='' src={`data:image/*;base64,${coffeeInfo.coffee_image}`} />
+        </span>
+        <h3 className="p-4 border-2 border-amber-900">{coffeeInfo.coffee_name}</h3>
+      </div>
+    )))
   }
 
   return (
@@ -65,13 +70,22 @@ function Home() {
                 value={selectedOption}
                 onChange={handleSelectChange}
                 className="p-2">
-          <ListCoffeeCategoryOption listCoffeeCategory={listCoffeeCategory} />
+          {listCoffeeCategory.length > 0 ?
+            <ListCoffeeCategoryOption listCoffeeCategory={listCoffeeCategory} /> :
+            <div>Không có dữ liệu coffee category từ database!</div>}
         </select>
       </div>
-      <div>
-        <ListCoffeeInfo />
+      <div className=''>
+      {/*listCoffeeInfo.length > 0 ?
+        <ListCoffeeInfo /> :
+          <div>Không có dữ liệu coffee info từ database!</div>*/}
       </div>
     </div>
   )
 }
-export default Home;
+
+function Test() {
+  return <div>Home</div>
+};
+
+export default Test;

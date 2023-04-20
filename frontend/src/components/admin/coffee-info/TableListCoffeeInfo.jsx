@@ -1,6 +1,7 @@
 import { v4 as uuidv4 } from 'uuid';
 
-import EditCoffeeInfo from './Edit/EditCoffeeInfo';
+import EditCoffeeInfo from './EditCoffeeInfo';
+import DeleteCoffeeInfo from './DeleteCoffeeInfo';
 
 function TableListCoffeeInfo({ allCoffeeInfo }) {
   if (allCoffeeInfo.length > 0)
@@ -16,6 +17,7 @@ function TableListCoffeeInfo({ allCoffeeInfo }) {
         <th className="p-4 border-2 border-amber-900">{coffeeInfo.coffee_price}</th>
         <th className="p-4 border-2 border-amber-900">{coffeeInfo.coffee_detail}</th>
         <th className="p-4 border-2 border-amber-900"><EditCoffeeInfo id={coffeeInfo.coffee_id}/></th>
+        <th className="p-4 border-2 border-amber-900"><DeleteCoffeeInfo id={coffeeInfo.coffee_id}/></th>
       </tr>
     ));
   

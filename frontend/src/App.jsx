@@ -14,9 +14,12 @@ function App() {
       <nav className='bg-yellow-800 h-20 flex text-white'>
         <a href="./"
            className='p-4'>Trang chủ</a>
-        <a href="./admin">Admin</a>
-        <a href="./login">Đăng Nhập</a>
-        <a href="./register">Đăng ký</a>
+        <a href="./admin"
+           className='p-4'>Admin</a>
+        <a href="./login"
+           className='p-4'>Đăng Nhập</a>
+        <a href="./register"
+           className='p-4'>Đăng ký</a>
       </nav>
     )
   }
