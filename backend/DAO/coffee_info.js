@@ -160,7 +160,7 @@ const getByID = (idCoffee) => {
         resolve(null);
       } else {
         console.log(`Coffee info found with id coffee ${idCoffee}`);
-        const coffeeImage = imageConvert(coffee.coffee_image); // convert coffee_image to base64-encoded data
+        const coffeeImage = img.imageConvert(coffee.coffee_image); // convert coffee_image to base64-encoded data
         const coffeeInfo = { ...coffee, coffee_image: coffeeImage }; // create a new object with the converted coffee_image
         resolve(coffeeInfo);
       }
